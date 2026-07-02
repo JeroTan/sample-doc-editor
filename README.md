@@ -91,6 +91,8 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 
 `db/migrations/0005_humanized_seed_documents.sql` updates seed document copy so the app reads like a customer-facing workspace.
 
+`db/migrations/0006_last_opened_not_content_update.sql` keeps document-open tracking from making freshly opened documents look stale during save.
+
 ## Page Routes
 
 - `/` landing page

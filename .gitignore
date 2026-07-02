@@ -6,3 +6,4 @@ dist
 *.local
 dev-server.*.log
 .env
+wrangler-dev.*.log
