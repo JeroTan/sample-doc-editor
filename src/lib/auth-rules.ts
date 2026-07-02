@@ -1,4 +1,4 @@
-const PASSWORD_HASH_ITERATIONS = 120_000;
+export const PASSWORD_HASH_ITERATIONS = 100_000;
 const PASSWORD_HASH_BITS = 256;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/u;
 
