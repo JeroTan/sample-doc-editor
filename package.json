@@ -20,6 +20,7 @@
     "test:run": "vitest run",
     "wrangler-types": "wrangler types",
     "wrangler-dev": "npm run build && wrangler dev",
+    "deploy:dry-run": "wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "prettier": "prettier --write ."
   },
