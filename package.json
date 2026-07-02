@@ -20,7 +20,7 @@
     "test:run": "vitest run",
     "wrangler-types": "wrangler types",
     "wrangler-dev": "npm run build && wrangler dev",
-    "deploy": "npx wrangler@latest deploy",
+    "deploy": "wrangler deploy",
     "prettier": "prettier --write ."
   },
   "dependencies": {
