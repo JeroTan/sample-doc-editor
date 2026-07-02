@@ -108,119 +108,119 @@
 ### [x] Task subsection 1.4.5 Timestamp edge cases
 > Use consistent ISO/SQLite timestamps > update `updated_at` on rename/save/share changes > avoid client clock dependence.
 
-# [ ] Epic 2 API Layer
-## [ ] Task Section 2.1 API Folder Structure
+# [x] Epic 2 API Layer
+## [x] Task Section 2.1 API Folder Structure
 > Implement routes < controllers < services < models > keep controllers thin > keep database SQL in models.
 
-### [ ] Task subsection 2.1.1 Create API folders
+### [x] Task subsection 2.1.1 Create API folders
 > Add `src/api/routes` > add `src/api/controllers` > add `src/api/services` > add `src/api/models` > add `_readme.md` where expected by setup skill.
 
-### [ ] Task subsection 2.1.2 Create shared API helpers
+### [x] Task subsection 2.1.2 Create shared API helpers
 > Add JSON response helper > add error helper > add validation helper > add request body parser > add current user helper.
 
-### [ ] Task subsection 2.1.3 Create model types
+### [x] Task subsection 2.1.3 Create model types
 > Define `User`, `Document`, `DocumentShare`, `DocumentImport` > keep DB row types separate from API DTOs if useful.
 
-## [ ] Task Section 2.2 Auth and User Simulation
+## [x] Task Section 2.2 Auth and User Simulation
 > Keep auth lightweight but coherent > no bcrypt > Web Crypto only if tokens or password-like secrets exist.
 
-### [ ] Task subsection 2.2.1 Choose MVP auth mode
+### [x] Task subsection 2.2.1 Choose MVP auth mode
 > Prefer seeded user selector for speed > persist selected user in signed or simple session cookie if implemented > document tradeoff.
 
-### [ ] Task subsection 2.2.2 Implement current user endpoint
+### [x] Task subsection 2.2.2 Implement current user endpoint
 > `GET /api/me` returns selected user > include owned/shared counts if cheap.
 
-### [ ] Task subsection 2.2.3 Implement switch user endpoint
+### [x] Task subsection 2.2.3 Implement switch user endpoint
 > `POST /api/session` with user id or email > validate seeded user exists > set cookie or return session payload.
 
-### [ ] Task subsection 2.2.4 Implement logout endpoint if session cookie used
+### [x] Task subsection 2.2.4 Implement logout endpoint if session cookie used
 > `DELETE /api/session` clears cookie > UI returns to onboarding/login.
 
-### [ ] Task subsection 2.2.5 Auth edge cases
+### [x] Task subsection 2.2.5 Auth edge cases
 > Missing user returns 401 > invalid user returns 400/404 > expired session returns 401 > malformed cookie ignored safely.
 
-## [ ] Task Section 2.3 Documents API
+## [x] Task Section 2.3 Documents API
 > Provide full create, read, rename, edit, save, reopen behavior.
 
-### [ ] Task subsection 2.3.1 List documents
+### [x] Task subsection 2.3.1 List documents
 > `GET /api/documents` returns owned and shared docs > include owner name > include access role > sort by updated date.
 
-### [ ] Task subsection 2.3.2 Create document
+### [x] Task subsection 2.3.2 Create document
 > `POST /api/documents` creates owner document > default title `Untitled document` > default content empty.
 
-### [ ] Task subsection 2.3.3 Get document detail
+### [x] Task subsection 2.3.3 Get document detail
 > `GET /api/documents/:id` returns document if owner or shared user > include share metadata.
 
-### [ ] Task subsection 2.3.4 Rename document
+### [x] Task subsection 2.3.4 Rename document
 > `PATCH /api/documents/:id/title` updates title > owners and editors only > validate title.
 
-### [ ] Task subsection 2.3.5 Save document content
+### [x] Task subsection 2.3.5 Save document content
 > `PUT /api/documents/:id/content` stores rich text content > owners and editors only > preserve supported formatting.
 
-### [ ] Task subsection 2.3.6 Delete document optional
+### [x] Task subsection 2.3.6 Delete document optional
 > Leave unchecked unless time allows > owner only > confirm in UI > cascade shares/imports.
 
-### [ ] Task subsection 2.3.7 Document API edge cases
+### [x] Task subsection 2.3.7 Document API edge cases
 > 404 if missing document > 403 if no access > 400 if invalid body > 413 if content too large > stale update warning if timestamp mismatch.
 
-## [ ] Task Section 2.4 Upload API
+## [x] Task Section 2.4 Upload API
 > Implement product-relevant file upload > MVP imports `.txt` and `.md` into editable document.
 
-### [ ] Task subsection 2.4.1 Upload new document
+### [x] Task subsection 2.4.1 Upload new document
 > `POST /api/uploads/import` accepts multipart file > parse `.txt` and `.md` > create document with imported content.
 
-### [ ] Task subsection 2.4.2 Upload into existing draft
+### [x] Task subsection 2.4.2 Upload into existing draft
 > Optional if time allows > `POST /api/documents/:id/import` replaces or appends imported content > require owner/editor.
 
-### [ ] Task subsection 2.4.3 Store import metadata
+### [x] Task subsection 2.4.3 Store import metadata
 > Insert `document_imports` row > file name > type > size > success or error > linked document id when created.
 
-### [ ] Task subsection 2.4.3a Store original upload in R2 when needed
+### [x] Task subsection 2.4.3a Store original upload in R2 when needed
 > For attachment flow, `.docx`, images, or files kept as originals > write object to R2 bucket `sample-doc-editor-storage` > store `r2_key`, checksum if available, file name, MIME type, and size in D1 > never store large binary files in D1.
 
-### [ ] Task subsection 2.4.4 Markdown handling
+### [x] Task subsection 2.4.4 Markdown handling
 > Minimum: preserve markdown as readable plain text > better: convert basic markdown headings/lists/bold to editor HTML if fast.
 
-### [ ] Task subsection 2.4.5 DOCX handling stretch
+### [x] Task subsection 2.4.5 DOCX handling stretch
 > Leave unchecked unless enough time > upload original `.docx` to R2 bucket `sample-doc-editor-storage` > extract editable text/markdown into D1 if parser implemented > otherwise state unsupported in UI and README.
 
-### [ ] Task subsection 2.4.6 Upload API edge cases
+### [x] Task subsection 2.4.6 Upload API edge cases
 > Missing file > multiple files > unsupported extension > MIME mismatch > file too large > empty file > binary content > parse failure.
 
-### [ ] Task subsection 2.4.7 R2 upload edge cases
+### [x] Task subsection 2.4.7 R2 upload edge cases
 > R2 binding missing > bucket write fails > object key collision > failed DB write after R2 write > delete orphan object or mark failed import > file exceeds R2/MVP size limit > user lacks document access.
 
-## [ ] Task Section 2.5 Sharing API
+## [x] Task Section 2.5 Sharing API
 > Allow one user to grant another user access > show owner/shared distinction.
 
-### [ ] Task subsection 2.5.1 List document shares
+### [x] Task subsection 2.5.1 List document shares
 > `GET /api/documents/:id/shares` returns users with access > owner only or owner/editor if chosen.
 
-### [ ] Task subsection 2.5.2 Grant access
+### [x] Task subsection 2.5.2 Grant access
 > `POST /api/documents/:id/shares` accepts email and role > owner only > validate target user.
 
-### [ ] Task subsection 2.5.3 Update share role optional
+### [x] Task subsection 2.5.3 Update share role optional
 > `PATCH /api/documents/:id/shares/:shareId` changes viewer/editor > owner only.
 
-### [ ] Task subsection 2.5.4 Revoke share optional
+### [x] Task subsection 2.5.4 Revoke share optional
 > `DELETE /api/documents/:id/shares/:shareId` removes access > owner only > cannot revoke owner.
 
-### [ ] Task subsection 2.5.5 Sharing API edge cases
+### [x] Task subsection 2.5.5 Sharing API edge cases
 > Share with self > share with nonexistent email > duplicate share > invalid role > target already owner > target already shared > owner tries revoke self.
 
-## [ ] Task Section 2.6 API Error and Validation Contract
+## [x] Task Section 2.6 API Error and Validation Contract
 > Keep frontend simple by returning consistent response shapes.
 
-### [ ] Task subsection 2.6.1 Success response shape
+### [x] Task subsection 2.6.1 Success response shape
 > Use `{ data }` or direct JSON consistently > include enough metadata for UI state.
 
-### [ ] Task subsection 2.6.2 Error response shape
+### [x] Task subsection 2.6.2 Error response shape
 > Use `{ error: { code, message, details? } }` > map validation, auth, permission, not found, server errors.
 
-### [ ] Task subsection 2.6.3 Input validation
+### [x] Task subsection 2.6.3 Input validation
 > Validate strings, IDs, roles, file sizes, file types > centralize reusable validators in `src/lib` or `src/utils`.
 
-### [ ] Task subsection 2.6.4 Security basics
+### [x] Task subsection 2.6.4 Security basics
 > Escape unsafe content where rendered outside editor > avoid SQL injection by using prepared statements > avoid leaking private docs.
 
 # [ ] Epic 3 UI and Editor Experience

@@ -31,6 +31,10 @@ npm run check
 npm run build-test
 ```
 
+## Upload Support
+
+MVP upload import supports `.txt` and `.md` files up to 1 MB. `.docx` is not supported in the MVP; original files or attachments belong in R2 through the `STORAGE` binding.
+
 ## Cloudflare
 
 `wrangler.jsonc` defines one root Cloudflare Worker: `doc-me-in`.
@@ -64,4 +68,4 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 
 ## Current Status
 
-Epic 0 setup and Epic 1 schema/migration slices are complete. API, full UI, integration, documentation diagrams, and deployment remain in later epics from `docs/tasklist.md`.
+Epic 0 setup, Epic 1 schema/migration, and Epic 2 API slices are complete. Full UI, integration, documentation diagrams, and deployment remain in later epics from `docs/tasklist.md`.
