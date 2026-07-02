@@ -125,6 +125,101 @@ select {
   letter-spacing: 0;
 }
 
+.document-preview {
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.doc-me-in-viewer,
+.doc-me-in-viewer .toastui-editor-contents {
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.doc-me-in-viewer .toastui-editor-contents {
+  padding: 0;
+}
+
+.document-preview > * + * {
+  margin-top: 1rem;
+}
+
+.document-preview h1,
+.document-preview h2,
+.document-preview h3,
+.document-preview h4,
+.document-preview h5,
+.document-preview h6 {
+  font-weight: 750;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.document-preview h1 {
+  border-bottom: 1px solid var(--color-outline-variant);
+  font-size: 2rem;
+  padding-bottom: 0.5rem;
+}
+
+.document-preview h2 {
+  font-size: 1.5rem;
+}
+
+.document-preview h3 {
+  font-size: 1.25rem;
+}
+
+.document-preview ul,
+.document-preview ol {
+  padding-left: 1.5rem;
+}
+
+.document-preview ul {
+  list-style: disc;
+}
+
+.document-preview ol {
+  list-style: decimal;
+}
+
+.document-preview li + li {
+  margin-top: 0.35rem;
+}
+
+.document-preview blockquote {
+  border-left: 3px solid var(--color-primary-strong);
+  color: var(--color-on-surface-variant);
+  padding-left: 1rem;
+}
+
+.document-preview pre {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  background: var(--color-surface-container-low);
+  padding: 1rem;
+}
+
+.document-preview code {
+  border-radius: var(--radius-sm);
+  background: var(--color-surface-container-low);
+  padding: 0.1rem 0.3rem;
+}
+
+.document-preview pre code {
+  background: transparent;
+  padding: 0;
+}
+
+.document-preview a {
+  color: var(--color-primary);
+  font-weight: 650;
+  text-decoration: underline;
+  text-underline-offset: 0.16em;
+}
+
 .Toastify__toast {
   border: 1px solid var(--color-outline-variant);
   border-radius: var(--radius-lg);

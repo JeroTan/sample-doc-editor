@@ -1,5 +1,6 @@
 import { decodeImportText, normalizeDocumentTitle, validateImportFile } from "../../lib/document-rules";
 import { createId } from "../../lib/ids";
+import { markdownToHtml } from "../../lib/markdown-to-html";
 import { ApiError } from "../config/http";
 import { createAttachmentRecord, createImportRecord } from "../models/imports";
 import type { ApiEnv, User } from "../types";
@@ -15,7 +16,7 @@ export async function importUploadAsDocument(env: ApiEnv, user: User, request: R
   const document = await createUserDocument(env, user, {
     title: title.value,
     contentMarkdown: parsed.text,
-    contentHtml: markdownToBasicHtml(parsed.text),
+    contentHtml: markdownToHtml(parsed.text),
     contentText: parsed.text,
   });
 
@@ -29,7 +30,7 @@ export async function importUploadIntoDocument(env: ApiEnv, user: User, document
   const parsed = await parseImportFile(env, user, request);
   const updated = await updateDocumentContent(env, user, document.id, {
     contentMarkdown: parsed.text,
-    contentHtml: markdownToBasicHtml(parsed.text),
+    contentHtml: markdownToHtml(parsed.text),
     contentText: parsed.text,
   });
 
@@ -118,12 +119,4 @@ function stripExtension(fileName: string) {
 
 function safeFileName(fileName: string) {
   return fileName.trim().replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/^-+|-+$/g, "") || "upload";
-}
-
-function markdownToBasicHtml(markdown: string) {
-  return `<pre>${escapeHtml(markdown)}</pre>`;
-}
-
-function escapeHtml(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }

@@ -23,6 +23,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { ApiClientError, documentApi, type DocumentBuckets, type SessionProfile } from "./api-client";
+import { DocumentPreview } from "./components/DocumentPreview";
 import { ToastEditor } from "./components/ToastEditor";
 import {
   canEditDocument,
@@ -623,13 +624,18 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
                       <label className="sr-only" htmlFor="document-title">
                         Document title
                       </label>
-                      <input
-                        id="document-title"
-                        value={titleDraft}
-                        onChange={(event) => updateTitle(event.target.value)}
-                        disabled={!editorActive}
-                        className="w-full min-w-0 rounded-lg border border-transparent bg-transparent px-0 py-1 text-2xl font-bold leading-8 text-on-surface outline-none focus:border-primary-strong focus:bg-surface focus:px-3 focus:ring-2 focus:ring-primary/20 disabled:text-on-surface"
-                      />
+                      {editorActive ? (
+                        <input
+                          id="document-title"
+                          value={titleDraft}
+                          onChange={(event) => updateTitle(event.target.value)}
+                          className="w-full min-w-0 rounded-lg border border-transparent bg-transparent px-0 py-1 text-2xl font-bold leading-8 text-on-surface outline-none focus:border-primary-strong focus:bg-surface focus:px-3 focus:ring-2 focus:ring-primary/20"
+                        />
+                      ) : (
+                        <h2 id="document-title" className="truncate py-1 text-2xl font-bold leading-8 text-on-surface">
+                          {titleDraft}
+                        </h2>
+                      )}
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
                         <span>{selectedDocument.ownerName}</span>
                         <span aria-hidden="true">/</span>
@@ -674,26 +680,31 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
                           Share
                         </Button>
                       ) : null}
-                      <Button type="button" onClick={saveDocument} disabled={!editorActive || !dirty || saving}>
-                        {saving ? (
-                          <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
-                        ) : (
-                          <Save className="h-4 w-4" aria-hidden="true" />
-                        )}
-                        Save
-                      </Button>
+                      {editorActive ? (
+                        <Button type="button" onClick={saveDocument} disabled={!dirty || saving}>
+                          {saving ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                          ) : (
+                            <Save className="h-4 w-4" aria-hidden="true" />
+                          )}
+                          Save
+                        </Button>
+                      ) : null}
                     </div>
                   </div>
                 </div>
 
                 <div className="min-h-0 flex-1 overflow-hidden px-4 py-4 md:px-6">
-                  <ToastEditor
-                    key={selectedDocument.id}
-                    initialValue={selectedDocument.contentMarkdown ?? ""}
-                    readOnly={!editorActive}
-                    height="calc(100vh - 248px)"
-                    onChange={handleEditorChange}
-                  />
+                  {editorActive ? (
+                    <ToastEditor
+                      key={selectedDocument.id}
+                      initialValue={selectedDocument.contentMarkdown ?? ""}
+                      height="calc(100vh - 248px)"
+                      onChange={handleEditorChange}
+                    />
+                  ) : (
+                    <DocumentPreview document={selectedDocument} />
+                  )}
                 </div>
               </div>
             ) : (

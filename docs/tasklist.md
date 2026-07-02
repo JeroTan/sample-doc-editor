@@ -181,8 +181,8 @@
 ### [x] Task subsection 2.4.4 Markdown handling
 > Minimum: preserve markdown as readable plain text > better: convert basic markdown headings/lists/bold to editor HTML if fast.
 
-### [x] Task subsection 2.4.5 DOCX handling stretch
-> Leave unchecked unless enough time > upload original `.docx` to R2 bucket `sample-doc-editor-storage` > extract editable text/markdown into D1 if parser implemented > otherwise state unsupported in UI and README.
+### [ ] Task subsection 2.4.5 DOCX handling stretch
+> Leave unchecked unless enough time > upload original `.docx` to R2 bucket `sample-doc-editor-storage` > parse `.docx` with `mammoth` into clean HTML/text > convert HTML to Markdown with `turndown` > store editable Markdown/HTML/text in D1 > otherwise state unsupported in UI and README.
 
 ### [x] Task subsection 2.4.6 Upload API edge cases
 > Missing file > multiple files > unsupported extension > MIME mismatch > file too large > empty file > binary content > parse failure.
@@ -303,18 +303,21 @@
 > Product-relevant import flow > reviewer sees clear supported limits.
 
 ### [x] Task subsection 3.5.1 Import dialog
-> Show supported formats `.txt`, `.md` > file size limit > selected file details > import action.
+> Show supported formats `.txt`, `.md` > file size limit > selected file details > import action > do not claim `.doc` or `.docx` support unless implemented.
 
 ### [x] Task subsection 3.5.2 Import into new document
 > Upload file > create document from file > title from file name > content from file text > open editor after success.
 
-### [ ] Task subsection 3.5.3 Import history optional
+### [ ] Task subsection 3.5.3 DOCX upload option
+> Add `.docx` as an upload option once backend parser exists > accept `.docx` in file picker > show Word document label and size > create editable document from parsed Markdown/HTML > show friendly parser failure if document cannot be converted > keep legacy `.doc` unsupported or attachment-only.
+
+### [ ] Task subsection 3.5.4 Import history optional
 > Show last imported file in document metadata if time allows > link to import row.
 
-### [ ] Task subsection 3.5.3a Attachment/original-file UI optional
+### [ ] Task subsection 3.5.4a Attachment/original-file UI optional
 > Show attached/original upload file name if R2 storage is enabled > allow download link through authorized API route > hide R2 object keys from UI.
 
-### [x] Task subsection 3.5.4 Upload UI edge cases
+### [x] Task subsection 3.5.5 Upload UI edge cases
 > Cancel file picker > unsupported type > oversize file > parse error > duplicate file name > mobile file picker.
 
 ## [x] Task Section 3.6 Sharing UI
@@ -363,7 +366,7 @@
 > Add `POST /api/auth/login` > add `POST /api/auth/register` > keep no bcrypt > store PBKDF2 password hash and salt in D1.
 
 ### [x] Task subsection 3.8.5 URL-aware app pages
-> Add `/app` document list route > add `/app/docs/:id/view` read-only route > add `/app/docs/:id/edit` edit route > sync editor navigation with browser history.
+> Add `/app` document list route > add `/app/docs/:id/view` read-only route rendered through Toast UI Viewer from Markdown, not the editor shell > add `/app/docs/:id/edit` edit route > sync editor navigation with browser history.
 
 ### [x] Task subsection 3.8.6 Page route documentation
 > Document landing, login, register, app, view, and edit URLs > note seed credential is shared separately > do not display or prefill credential in UI.
