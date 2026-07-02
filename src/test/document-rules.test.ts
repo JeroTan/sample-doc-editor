@@ -39,6 +39,25 @@ describe("document persistence rules", () => {
       code: "file_type_unsupported",
       message: "Only .txt and .md uploads are supported.",
     });
+    expect(validateImportFile({ name: "word.docx", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", size: 128 })).toEqual({
+      ok: false,
+      code: "file_type_unsupported",
+      message: "Only .txt and .md uploads are supported.",
+    });
+    expect(
+      validateImportFile(
+        { name: "word.docx", type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", size: 128 },
+        { allowDocx: true },
+      ),
+    ).toEqual({
+      ok: true,
+      value: {
+        extension: ".docx",
+        fileName: "word.docx",
+        fileSize: 128,
+        fileType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      },
+    });
     expect(validateImportFile({ name: "notes.md", type: "image/png", size: 128 })).toEqual({
       ok: false,
       code: "file_mime_mismatch",

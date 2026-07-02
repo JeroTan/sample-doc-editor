@@ -13,14 +13,19 @@ type ImportFileInput = {
   size: number;
 };
 
+type ImportValidationOptions = {
+  allowDocx?: boolean;
+};
+
 type ImportFileMetadata = {
-  extension: ".md" | ".txt";
+  extension: ".docx" | ".md" | ".txt";
   fileName: string;
   fileSize: number;
   fileType: string;
 };
 
 const importMimeTypes: Record<ImportFileMetadata["extension"], Set<string>> = {
+  ".docx": new Set(["", "application/octet-stream", "application/zip", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"]),
   ".md": new Set(["", "application/octet-stream", "text/markdown", "text/plain", "text/x-markdown"]),
   ".txt": new Set(["", "application/octet-stream", "text/plain"]),
 };
@@ -51,16 +56,16 @@ export function normalizeDocumentTitle(input: string): RuleResult<string> {
   return { ok: true, value: title };
 }
 
-export function validateImportFile(input: ImportFileInput): RuleResult<ImportFileMetadata> {
+export function validateImportFile(input: ImportFileInput, options: ImportValidationOptions = {}): RuleResult<ImportFileMetadata> {
   const fileName = input.name.trim();
   const fileType = input.type?.trim().toLowerCase() ?? "";
   const extension = getSupportedExtension(fileName);
 
-  if (!extension) {
+  if (!extension || (extension === ".docx" && !options.allowDocx)) {
     return {
       ok: false,
       code: "file_type_unsupported",
-      message: "Only .txt and .md uploads are supported.",
+      message: options.allowDocx ? "Only .txt, .md, and .docx uploads are supported." : "Only .txt and .md uploads are supported.",
     };
   }
 
@@ -123,6 +128,10 @@ function getSupportedExtension(fileName: string): ImportFileMetadata["extension"
 
   if (lowerName.endsWith(".txt")) {
     return ".txt";
+  }
+
+  if (lowerName.endsWith(".docx")) {
+    return ".docx";
   }
 
   return null;

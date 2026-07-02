@@ -34,3 +34,13 @@ declare module "@toast-ui/editor/viewer" {
     destroy(): void;
   }
 }
+
+declare module "mammoth/mammoth.browser.js" {
+  type MammothResult = {
+    value: string;
+    messages: Array<{ type: string; message: string }>;
+  };
+
+  export function convertToMarkdown(input: { arrayBuffer: ArrayBuffer }): Promise<MammothResult>;
+  export function extractRawText(input: { arrayBuffer: ArrayBuffer }): Promise<MammothResult>;
+}

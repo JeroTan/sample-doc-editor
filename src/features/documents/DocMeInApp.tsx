@@ -25,6 +25,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { ApiClientError, documentApi, type DocumentBuckets, type SessionProfile } from "./api-client";
 import { DocumentPreview } from "./components/DocumentPreview";
 import { ToastEditor } from "./components/ToastEditor";
+import { convertDocxToMarkdownFile, isDocxUpload } from "./docx-client-import";
 import {
   canEditDocument,
   canShareDocument,
@@ -362,17 +363,17 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       return;
     }
 
-    const validation = validateImportFile(file);
+    const validation = validateImportFile(file, { allowDocx: true });
     setUploadError(validation.ok ? null : validation.message);
   }
 
   async function submitUpload() {
     if (!selectedFile) {
-      setUploadError("Choose a .txt or .md file.");
+      setUploadError("Choose a .txt, .md, or .docx file.");
       return;
     }
 
-    const validation = validateImportFile(selectedFile);
+    const validation = validateImportFile(selectedFile, { allowDocx: true });
     if (!validation.ok) {
       setUploadError(validation.message);
       return;
@@ -380,10 +381,11 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
 
     setUploading(true);
     try {
+      const uploadFile = isDocxUpload(selectedFile) ? await convertDocxToMarkdownFile(selectedFile) : selectedFile;
       const { document } =
         uploadMode === "replace" && selectedDocument && editorActive
-          ? await documentApi.importIntoDocument(selectedDocument.id, selectedFile)
-          : await documentApi.uploadDocument(selectedFile);
+          ? await documentApi.importIntoDocument(selectedDocument.id, uploadFile)
+          : await documentApi.uploadDocument(uploadFile);
 
       setUploadOpen(false);
       await refreshDocuments();
@@ -919,11 +921,11 @@ function UploadDialog({
           <input
             id="file-import"
             type="file"
-            accept=".txt,.md,text/plain,text/markdown"
+            accept=".txt,.md,.docx,text/plain,text/markdown,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             onChange={onFileChange}
             className="w-full rounded-lg border border-outline-variant bg-surface px-3 py-2 text-sm text-on-surface file:mr-3 file:rounded-full file:border-0 file:bg-primary-strong file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-on-primary"
           />
-          <p className="mt-2 text-xs text-on-surface-variant">.txt or .md, 1 MB max</p>
+          <p className="mt-2 text-xs text-on-surface-variant">.txt, .md, or .docx, 1 MB max</p>
         </div>
 
         {file ? (

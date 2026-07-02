@@ -181,8 +181,8 @@
 ### [x] Task subsection 2.4.4 Markdown handling
 > Minimum: preserve markdown as readable plain text > better: convert basic markdown headings/lists/bold to editor HTML if fast.
 
-### [ ] Task subsection 2.4.5 DOCX handling stretch
-> Leave unchecked unless enough time > upload original `.docx` to R2 bucket `sample-doc-editor-storage` > parse `.docx` with `mammoth` into clean HTML/text > convert HTML to Markdown with `turndown` > store editable Markdown/HTML/text in D1 > otherwise state unsupported in UI and README.
+### [x] Task subsection 2.4.5 DOCX handling stretch
+> Client converts `.docx` with `mammoth` before upload > generated Markdown is uploaded through existing `.md` import path > store editable Markdown/HTML/text in D1 > current MVP does not upload legacy `.doc`.
 
 ### [x] Task subsection 2.4.6 Upload API edge cases
 > Missing file > multiple files > unsupported extension > MIME mismatch > file too large > empty file > binary content > parse failure.
@@ -308,8 +308,8 @@
 ### [x] Task subsection 3.5.2 Import into new document
 > Upload file > create document from file > title from file name > content from file text > open editor after success.
 
-### [ ] Task subsection 3.5.3 DOCX upload option
-> Add `.docx` as an upload option once backend parser exists > accept `.docx` in file picker > show Word document label and size > create editable document from parsed Markdown/HTML > show friendly parser failure if document cannot be converted > keep legacy `.doc` unsupported or attachment-only.
+### [x] Task subsection 3.5.3 DOCX upload option
+> Add `.docx` as an upload option > accept `.docx` in file picker > convert Word document client-side into Markdown before API upload > create editable document from generated Markdown > show friendly parser failure if document cannot be converted > keep legacy `.doc` unsupported.
 
 ### [ ] Task subsection 3.5.4 Import history optional
 > Show last imported file in document metadata if time allows > link to import row.

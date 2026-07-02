@@ -10,6 +10,9 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["mammoth/mammoth.browser.js"],
+    },
     resolve: {
       // @ts-ignore Cloudflare Worker builds need edge server renderer.
       alias: import.meta.env.PROD && {
