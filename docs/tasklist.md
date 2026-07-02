@@ -32,77 +32,80 @@
 ### [x] Task subsection 0.2.6 Use safe helper locations
 > Put atomic helpers in `src/lib` or `src/utils` > put dependency-free utilities near domain helpers > avoid duplicated inline logic.
 
-# [ ] Epic 1 Schema and Persistence
-## [ ] Task Section 1.1 D1 Database Plan
+### [x] Task subsection 0.2.7 Add R2 storage binding
+> Add root-only R2 binding in `wrangler.jsonc` > binding name `STORAGE` > bucket name `sample-doc-editor-storage` > run `npm run wrangler-types` immediately after config change > keep no development Worker env.
+
+# [x] Epic 1 Schema and Persistence
+## [x] Task Section 1.1 D1 Database Plan
 > Design schema first > support users, documents, shares, upload imports, and audit timestamps.
 
-### [ ] Task subsection 1.1.1 Create migration structure
+### [x] Task subsection 1.1.1 Create migration structure
 > Create `db/migrations` or repo-standard D1 migration folder > name initial migration clearly > keep schema reproducible.
 
-### [ ] Task subsection 1.1.2 Define `users` table
+### [x] Task subsection 1.1.2 Define `users` table
 > Fields: `id`, `email`, `display_name`, `avatar_initials`, `created_at`, `updated_at` > enforce unique normalized email.
 
-### [ ] Task subsection 1.1.3 Define `sessions` table if auth uses persistent sessions
+### [x] Task subsection 1.1.3 Define `sessions` table if auth uses persistent sessions
 > Fields: `id`, `user_id`, `token_hash`, `expires_at`, `created_at` > use Web Crypto hashing > no bcrypt.
 
-### [ ] Task subsection 1.1.4 Define `documents` table
+### [x] Task subsection 1.1.4 Define `documents` table
 > Fields: `id`, `owner_id`, `title`, `content_html`, `content_text`, `created_at`, `updated_at`, `last_opened_at` > store Toast UI output safely.
 
-### [ ] Task subsection 1.1.5 Define `document_shares` table
+### [x] Task subsection 1.1.5 Define `document_shares` table
 > Fields: `id`, `document_id`, `user_id`, `role`, `created_at`, `updated_at` > roles `viewer` and `editor` if scope allows > unique `(document_id, user_id)`.
 
-### [ ] Task subsection 1.1.6 Define `document_imports` table
+### [x] Task subsection 1.1.6 Define `document_imports` table
 > Fields: `id`, `document_id`, `user_id`, `file_name`, `file_type`, `file_size`, `status`, `error_message`, `created_at` > track upload workflow.
 
-### [ ] Task subsection 1.1.7 Define optional `document_attachments` table
-> Leave unchecked unless attachment mode chosen > fields: `id`, `document_id`, `user_id`, `file_name`, `file_type`, `file_size`, `content_text`, `created_at`.
+### [x] Task subsection 1.1.7 Define optional `document_attachments` table
+> Leave unchecked unless attachment/original-file mode chosen > fields: `id`, `document_id`, `user_id`, `file_name`, `file_type`, `file_size`, `r2_key`, `content_text`, `created_at` > metadata in D1, binary/original file in R2 bucket `sample-doc-editor-storage`.
 
-### [ ] Task subsection 1.1.8 Add indexes
+### [x] Task subsection 1.1.8 Add indexes
 > Index `documents.owner_id` > index `document_shares.user_id` > index `document_shares.document_id` > index `document_imports.document_id`.
 
-### [ ] Task subsection 1.1.9 Add constraints
+### [x] Task subsection 1.1.9 Add constraints
 > Enforce foreign keys > cascade deletes where safe > prevent duplicate shares > prevent null owner > prevent empty user email.
 
-## [ ] Task Section 1.2 Seed Data
+## [x] Task Section 1.2 Seed Data
 > Create reviewer-ready users and sample documents > make sharing demo obvious.
 
-### [ ] Task subsection 1.2.1 Seed accounts
+### [x] Task subsection 1.2.1 Seed accounts
 > Add `alice@example.com`, `bob@example.com`, `reviewer@example.com` > include display names > document credentials or selector behavior in README.
 
-### [ ] Task subsection 1.2.2 Seed owned documents
+### [x] Task subsection 1.2.2 Seed owned documents
 > Add one document owned by Alice > add one document owned by Bob > include basic rich text HTML.
 
-### [ ] Task subsection 1.2.3 Seed shared document
+### [x] Task subsection 1.2.3 Seed shared document
 > Share one Alice document with Bob > ensure dashboard can show owned vs shared distinction immediately.
 
-## [ ] Task Section 1.3 D1 Migration Execution
+## [x] Task Section 1.3 D1 Migration Execution
 > Run migrations locally and remotely per user source > ask user only if Wrangler auth fails.
 
-### [ ] Task subsection 1.3.1 Run local migration
+### [x] Task subsection 1.3.1 Run local migration
 > Use Wrangler D1 local execute/migrations command > verify tables exist > verify seeds inserted.
 
-### [ ] Task subsection 1.3.2 Run remote migration
+### [x] Task subsection 1.3.2 Run remote migration
 > Use configured root D1 database `sample-doc-editor-database` > run migration remote with no Wrangler env flag > verify no auth failure > ask user if login needed.
 
-### [ ] Task subsection 1.3.3 Record migration commands
+### [x] Task subsection 1.3.3 Record migration commands
 > Add exact root Worker commands to README > include local reset/reseed command if implemented.
 
-## [ ] Task Section 1.4 Persistence Edge Cases
+## [x] Task Section 1.4 Persistence Edge Cases
 > Guard against malformed data before API and UI rely on database.
 
-### [ ] Task subsection 1.4.1 Title edge cases
+### [x] Task subsection 1.4.1 Title edge cases
 > Empty title uses `Untitled document` > trim whitespace > cap title length > reject control characters.
 
-### [ ] Task subsection 1.4.2 Content edge cases
+### [x] Task subsection 1.4.2 Content edge cases
 > Allow empty content > cap max content size > preserve headings, bold, italic, underline, lists > store sanitized HTML or safe editor format.
 
-### [ ] Task subsection 1.4.3 Sharing edge cases
+### [x] Task subsection 1.4.3 Sharing edge cases
 > Prevent share with owner > prevent duplicate share rows > handle unknown email > handle deleted user > handle deleted document.
 
-### [ ] Task subsection 1.4.4 Upload import edge cases
+### [x] Task subsection 1.4.4 Upload import edge cases
 > Reject unsupported type > reject oversized file > reject empty file > preserve line breaks > handle invalid encoding > show friendly error.
 
-### [ ] Task subsection 1.4.5 Timestamp edge cases
+### [x] Task subsection 1.4.5 Timestamp edge cases
 > Use consistent ISO/SQLite timestamps > update `updated_at` on rename/save/share changes > avoid client clock dependence.
 
 # [ ] Epic 2 API Layer
@@ -172,14 +175,20 @@
 ### [ ] Task subsection 2.4.3 Store import metadata
 > Insert `document_imports` row > file name > type > size > success or error > linked document id when created.
 
+### [ ] Task subsection 2.4.3a Store original upload in R2 when needed
+> For attachment flow, `.docx`, images, or files kept as originals > write object to R2 bucket `sample-doc-editor-storage` > store `r2_key`, checksum if available, file name, MIME type, and size in D1 > never store large binary files in D1.
+
 ### [ ] Task subsection 2.4.4 Markdown handling
 > Minimum: preserve markdown as readable plain text > better: convert basic markdown headings/lists/bold to editor HTML if fast.
 
 ### [ ] Task subsection 2.4.5 DOCX handling stretch
-> Leave unchecked unless enough time > support `.docx` import with dependency > otherwise state unsupported in UI and README.
+> Leave unchecked unless enough time > upload original `.docx` to R2 bucket `sample-doc-editor-storage` > extract editable text/markdown into D1 if parser implemented > otherwise state unsupported in UI and README.
 
 ### [ ] Task subsection 2.4.6 Upload API edge cases
 > Missing file > multiple files > unsupported extension > MIME mismatch > file too large > empty file > binary content > parse failure.
+
+### [ ] Task subsection 2.4.7 R2 upload edge cases
+> R2 binding missing > bucket write fails > object key collision > failed DB write after R2 write > delete orphan object or mark failed import > file exceeds R2/MVP size limit > user lacks document access.
 
 ## [ ] Task Section 2.5 Sharing API
 > Allow one user to grant another user access > show owner/shared distinction.
@@ -301,6 +310,9 @@
 
 ### [ ] Task subsection 3.5.3 Import history optional
 > Show last imported file in document metadata if time allows > link to import row.
+
+### [ ] Task subsection 3.5.3a Attachment/original-file UI optional
+> Show attached/original upload file name if R2 storage is enabled > allow download link through authorized API route > hide R2 object keys from UI.
 
 ### [ ] Task subsection 3.5.4 Upload UI edge cases
 > Cancel file picker > unsupported type > oversize file > parse error > duplicate file name > mobile file picker.
@@ -438,10 +450,10 @@
 > List seeded users > explain user switcher or login > show sharing test path.
 
 ### [ ] Task subsection 6.1.3 Supported upload types
-> State `.txt` and `.md` supported > state `.docx` unsupported if not implemented > list file size limit.
+> State `.txt` and `.md` supported > state `.docx` unsupported if not implemented > list file size limit > explain D1 stores document markdown/text/HTML and R2 bucket `sample-doc-editor-storage` stores original files or attachments.
 
 ### [ ] Task subsection 6.1.4 Deployment instructions
-> Include root Cloudflare Worker deploy command > D1 remote migration command with no development env > live URL placeholder/result.
+> Include root Cloudflare Worker deploy command > D1 remote migration command with no development env > R2 bucket binding `sample-doc-editor-storage` > live URL placeholder/result.
 
 ### [ ] Task subsection 6.1.5 Partial/incomplete section
 > List working features > incomplete features > next 2-4 hour plan.
@@ -456,7 +468,7 @@
 > Explain why MVP uses seeded users > why upload imports `.txt/.md` > why real-time collaboration deferred.
 
 ### [ ] Task subsection 6.2.3 Data model note
-> Explain ownership, sharing, imports, content storage, permission checks.
+> Explain ownership, sharing, imports, content storage, R2 original/attachment storage, permission checks.
 
 ### [ ] Task subsection 6.2.4 Tradeoffs
 > Document no Google Docs parity > no full auth if seeded user mode > no real-time multi-user editing unless stretch.
@@ -512,6 +524,9 @@
 
 ### [ ] Task subsection 7.1.2 Verify D1 binding
 > Confirm `sample-doc-editor-database` binding id in root `wrangler.jsonc` > run `npm run wrangler-types` after config update.
+
+### [ ] Task subsection 7.1.2a Verify R2 binding
+> Confirm R2 bucket `sample-doc-editor-storage` exists > bind it in root `wrangler.jsonc` > run `npm run wrangler-types` after config update > smoke test authorized upload/download path when implemented.
 
 ### [ ] Task subsection 7.1.3 Run remote migration
 > Apply schema and seed data to remote D1 > verify seeded users and docs exist.

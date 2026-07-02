@@ -1,2 +1,4 @@
--- Epic 1 owns the full D1 schema.
--- This placeholder keeps setup scripts stable until schema work starts.
+-- Full schema lives in db/migrations/0001_initial_schema.sql.
+-- Use D1 migrations instead of executing this file directly:
+-- npm run db:migrate:local
+-- npm run db:migrate:remote

@@ -6,6 +6,7 @@ Basically, this will be deployed in the CloudFlare worker so please have a time 
 
 So our database will be: sample-doc-editor-database
 It is a D1 Database.
+For R2, it is here: sample-doc-editor-storage
 
 If you are making a schema, please run the migration on both local and remote. wrangler is already configured if not authenticated please ask the user.
 

@@ -20,6 +20,14 @@
       "binding": "DB",
       "database_name": "sample-doc-editor-database",
       "database_id": "3157d8e9-4a51-45e3-893a-e0dac3a21956",
+      "remote": true,
+      "migrations_dir": "db/migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "STORAGE",
+      "bucket_name": "sample-doc-editor-storage",
       "remote": true
     }
   ],

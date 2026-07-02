@@ -154,8 +154,8 @@ Total: 94/100
 
 ### Core Feature 4: Persistence
 
-- Description: Store users, documents, shares, and upload import metadata in Cloudflare D1.
-- User flow: All create, update, upload, and share operations write to D1.
+- Description: Store users, documents, shares, document markdown/text/HTML, and upload import metadata in Cloudflare D1. Store original uploaded files or attachments in R2 when the workflow keeps the source file.
+- User flow: All create, update, upload, and share operations write metadata to D1; original files or attachments write to R2 bucket `sample-doc-editor-storage` when needed.
 - Edge cases: Missing records, deleted user/document, malformed IDs, conflicting updates.
 - Error handling: Use prepared statements, consistent API error shape, and safe 404/403 responses.
 
@@ -170,6 +170,7 @@ Total: 94/100
 - TypeScript `5.9.3`
 - Cloudflare Worker deployment
 - Cloudflare D1 database: `sample-doc-editor-database`
+- Cloudflare R2 bucket: `sample-doc-editor-storage`
 - Single root Worker deployment; no development Cloudflare Worker environment
 - React for interactive UI
 - Tailwind CSS
@@ -187,6 +188,8 @@ Total: 94/100
 - Use bulletproof-react-inspired feature structure where practical.
 - Run D1 migrations locally and remotely. If Wrangler auth fails, ask user.
 - Use root Wrangler commands without `--env development`.
+- Use D1 for editable document markdown/text/HTML and sharing metadata.
+- Use R2 for original file uploads, attachments, images, or binaries.
 
 ### Security
 
@@ -269,6 +272,7 @@ Total: 94/100
 **Dependencies:**
 - Wrangler configured for Cloudflare account.
 - D1 database `sample-doc-editor-database`.
+- R2 bucket `sample-doc-editor-storage`.
 - Network access for npm package installation.
 - User-provided Loom/YouTube video URL if final walkthrough is outside Codex scope.
 
