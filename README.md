@@ -61,6 +61,13 @@ npm run wrangler-dev
 npm run deploy
 ```
 
+Cloudflare Git deployment settings:
+
+- Build command: `npm run build`
+- Deploy command: `npm run deploy`
+
+Do not set the deploy command to raw `wrangler deploy`; the Cloudflare shell may not include `node_modules/.bin` on `PATH`. The npm script resolves the project-local Wrangler version from `devDependencies`.
+
 `db/migrations/0001_initial_schema.sql` creates reviewer seed users:
 
 - `alice@example.com`

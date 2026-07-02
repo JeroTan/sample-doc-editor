@@ -5,6 +5,9 @@
   "account_id": "8e6c0cd85435131ccf9936cc03cb62e5",
   "compatibility_date": "2026-04-22",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "dev": {
+    "inspector_port": 9239
+  },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS"

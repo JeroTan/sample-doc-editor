@@ -139,7 +139,7 @@ describe("API router", () => {
       headers: { "x-user-email": "alice@example.com" },
       body: JSON.stringify({ title: "  Sprint Notes  " }),
     });
-    const save = await requestJson<{ data: { document: { contentMarkdown: string } } }>(
+    const save = await requestJson<{ data: { document: { contentMarkdown: string } } } | { error: { code: string } }>(
       env,
       `/api/documents/${id}/content`,
       {
@@ -161,7 +161,7 @@ describe("API router", () => {
     expect({
       createdTitle: create.body.data.document.title,
       renamedTitle: rename.body.data.document.title,
-      savedMarkdown: save.body.data.document.contentMarkdown,
+      savedMarkdown: "data" in save.body ? save.body.data.document.contentMarkdown : save.body.error.code,
       reopened: {
         title: detail.body.data.document.title,
         contentMarkdown: detail.body.data.document.contentMarkdown,
@@ -210,6 +210,40 @@ describe("API router", () => {
       privateRead: { status: 403, code: "forbidden" },
       invalidTitle: { status: 400, code: "title_control_character" },
       staleSave: { status: 409, code: "document_stale" },
+    });
+  });
+
+  test("owner can save with timestamp returned by document detail", async () => {
+    const env = createEnv();
+    const detail = await requestJson<{ data: { document: { updatedAt: string } } }>(
+      env,
+      "/api/documents/doc_admin_welcome",
+      { headers: { "x-user-email": "admin@mail.com" } },
+    );
+
+    const save = await requestJson<{ data: { document: { contentMarkdown: string } } }>(
+      env,
+      "/api/documents/doc_admin_welcome/content",
+      {
+        method: "PUT",
+        headers: { "x-user-email": "admin@mail.com" },
+        body: JSON.stringify({
+          contentMarkdown: "## Saved from detail",
+          contentHtml: "<h2>Saved from detail</h2>",
+          contentText: "Saved from detail",
+          updatedAt: detail.body.data.document.updatedAt,
+        }),
+      },
+    );
+
+    expect({
+      detailStatus: detail.response.status,
+      saveStatus: save.response.status,
+      markdown: save.body.data.document.contentMarkdown,
+    }).toEqual({
+      detailStatus: 200,
+      saveStatus: 200,
+      markdown: "## Saved from detail",
     });
   });
 
