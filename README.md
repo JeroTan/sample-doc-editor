@@ -1,5 +1,7 @@
 # Doc-Me-In
 
+> P.S. You can't possibly run it in local because the wrangler is binded by me. Please TAKE NOTE!
+
 Collaborative document editor MVP for the Ajaia full stack product engineering assessment.
 
 ## Stack
