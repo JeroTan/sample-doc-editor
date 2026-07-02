@@ -68,6 +68,94 @@ select {
   font: inherit;
 }
 
+.doc-me-in-editor,
+.doc-me-in-editor .toastui-editor-defaultUI {
+  height: 100%;
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.doc-me-in-editor .toastui-editor-defaultUI {
+  overflow: hidden;
+  border-color: var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-sans);
+}
+
+.doc-me-in-editor .toastui-editor-toolbar {
+  background: var(--color-surface-container-lowest);
+  border-bottom-color: var(--color-outline-variant);
+}
+
+.doc-me-in-editor .toastui-editor-defaultUI-toolbar {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-inline: 0.5rem;
+}
+
+.doc-me-in-editor .toastui-editor-toolbar-group {
+  flex-shrink: 0;
+}
+
+.doc-me-in-editor .toastui-editor-main,
+.doc-me-in-editor .toastui-editor-main-container,
+.doc-me-in-editor .toastui-editor-ww-container,
+.doc-me-in-editor .toastui-editor-ww-container > .toastui-editor {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.doc-me-in-editor .toastui-editor-main,
+.doc-me-in-editor .toastui-editor-contents,
+.doc-me-in-editor .ProseMirror {
+  font-family: var(--font-sans);
+}
+
+.doc-me-in-editor .toastui-editor-contents {
+  color: var(--color-on-surface);
+  overflow-wrap: anywhere;
+  padding-inline: 1rem;
+  white-space: normal;
+}
+
+.doc-me-in-editor .toastui-editor-contents h1,
+.doc-me-in-editor .toastui-editor-contents h2,
+.doc-me-in-editor .toastui-editor-contents h3 {
+  letter-spacing: 0;
+}
+
+.Toastify__toast {
+  border: 1px solid var(--color-outline-variant);
+  border-radius: var(--radius-lg);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+}
+
+.Toastify__toast--success {
+  color: var(--color-primary);
+}
+
+.Toastify__toast--error {
+  color: var(--color-error);
+}
+
+@media (max-width: 767px) {
+  .doc-me-in-editor,
+  .doc-me-in-editor .toastui-editor-defaultUI {
+    max-width: calc(100vw - 2rem);
+    overflow: hidden;
+    width: calc(100vw - 2rem);
+  }
+
+  .doc-me-in-editor .toastui-editor-contents,
+  .doc-me-in-editor .ProseMirror {
+    max-width: 100%;
+    min-width: 0;
+    word-break: break-word;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

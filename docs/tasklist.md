@@ -223,89 +223,89 @@
 ### [x] Task subsection 2.6.4 Security basics
 > Escape unsafe content where rendered outside editor > avoid SQL injection by using prepared statements > avoid leaking private docs.
 
-# [ ] Epic 3 UI and Editor Experience
-## [ ] Task Section 3.1 Design System Setup
+# [x] Epic 3 UI and Editor Experience
+## [x] Task Section 3.1 Design System Setup
 > Apply Lumina Productivity style from `docs/design.md` > keep app dense, clear, editor-focused.
 
-### [ ] Task subsection 3.1.1 Tailwind tokens
+### [x] Task subsection 3.1.1 Tailwind tokens
 > Map colors from `docs/design.md` into global CSS/theme variables > use Inter > keep 4px spacing rhythm.
 
-### [ ] Task subsection 3.1.2 shadcn customization
+### [x] Task subsection 3.1.2 shadcn customization
 > Customize base button, input, dialog, tabs, toast styles > use orange primary > warm neutral surfaces > 8-12px radius depending component.
 
-### [ ] Task subsection 3.1.3 Icons
+### [x] Task subsection 3.1.3 Icons
 > Use lucide icons for create, upload, save, share, rename, list, document, user, search, alert.
 
-### [ ] Task subsection 3.1.4 Toastify styling
+### [x] Task subsection 3.1.4 Toastify styling
 > Use toastify for save success, upload success, share success, validation errors, API failures.
 
-### [ ] Task subsection 3.1.5 Responsive layout
+### [x] Task subsection 3.1.5 Responsive layout
 > Desktop: sidebar document list + editor workspace > mobile: top user switcher + document list view + editor view.
 
-## [ ] Task Section 3.2 Onboarding and User Selection
+## [x] Task Section 3.2 Onboarding and User Selection
 > Make reviewer able to test sharing fast without real signup friction.
 
-### [ ] Task subsection 3.2.1 User selector screen
+### [x] Task subsection 3.2.1 User selector screen
 > Show seeded users > allow switching between Alice, Bob, Reviewer > show selected user in app shell.
 
-### [ ] Task subsection 3.2.2 Onboarding copy
+### [x] Task subsection 3.2.2 Onboarding copy
 > Keep concise > state supported upload types > state demo users > avoid feature tutorial clutter.
 
-### [ ] Task subsection 3.2.3 Onboarding edge cases
+### [x] Task subsection 3.2.3 Onboarding edge cases
 > No users from API > current session invalid > user switch fails > mobile layout.
 
-## [ ] Task Section 3.3 Dashboard and Document List
+## [x] Task Section 3.3 Dashboard and Document List
 > Show owned and shared docs clearly > make creation and reopening obvious.
 
-### [ ] Task subsection 3.3.1 Document sections
+### [x] Task subsection 3.3.1 Document sections
 > Add `Owned by me` section > add `Shared with me` section > show owner name for shared docs.
 
-### [ ] Task subsection 3.3.2 Document row
+### [x] Task subsection 3.3.2 Document row
 > Show title > owner > updated time > role badge > selected state > empty title fallback.
 
-### [ ] Task subsection 3.3.3 Create button
+### [x] Task subsection 3.3.3 Create button
 > Primary orange button with plus icon > creates new document > opens editor.
 
-### [ ] Task subsection 3.3.4 Upload/import button
+### [x] Task subsection 3.3.4 Upload/import button
 > Upload icon button > opens file picker/dialog > supports `.txt` and `.md` > shows unsupported types clearly.
 
-### [ ] Task subsection 3.3.5 Empty states
+### [x] Task subsection 3.3.5 Empty states
 > No owned docs > no shared docs > no search results if search added > API load failure.
 
-### [ ] Task subsection 3.3.6 List edge cases
+### [x] Task subsection 3.3.6 List edge cases
 > Long titles truncate cleanly > many docs scroll > duplicate titles allowed but distinguish by owner/date > loading skeleton.
 
-## [ ] Task Section 3.4 Rich Text Editor
+## [x] Task Section 3.4 Rich Text Editor
 > Use Toast UI editor > support required formatting > feel coherent and saveable.
 
-### [ ] Task subsection 3.4.1 Editor component
+### [x] Task subsection 3.4.1 Editor component
 > Integrate Toast UI React wrapper or compatible client-only component > avoid SSR crash > load editor CSS.
 
-### [ ] Task subsection 3.4.2 Formatting support
+### [x] Task subsection 3.4.2 Formatting support
 > Bold > italic > underline if supported/configured > heading/text size variation > bulleted list > numbered list.
 
-### [ ] Task subsection 3.4.3 Title editor
+### [x] Task subsection 3.4.3 Title editor
 > Inline title input > save title on blur or explicit save > show validation errors.
 
-### [ ] Task subsection 3.4.4 Save behavior
+### [x] Task subsection 3.4.4 Save behavior
 > Manual save button > optional autosave debounce if time allows > show dirty state > show saved timestamp.
 
-### [ ] Task subsection 3.4.5 Reopen behavior
+### [x] Task subsection 3.4.5 Reopen behavior
 > Select document from list > load content and title > preserve formatting > restore selected doc after refresh if possible.
 
-### [ ] Task subsection 3.4.6 Editor permissions
+### [x] Task subsection 3.4.6 Editor permissions
 > Owner/editor can edit > viewer sees read-only editor > disabled toolbar in read-only mode > share button visible based on owner.
 
-### [ ] Task subsection 3.4.7 Editor edge cases
+### [x] Task subsection 3.4.7 Editor edge cases
 > New unsaved doc > save failure > network failure > switching docs with unsaved changes > empty content > very long content.
 
-## [ ] Task Section 3.5 Upload UI
+## [x] Task Section 3.5 Upload UI
 > Product-relevant import flow > reviewer sees clear supported limits.
 
-### [ ] Task subsection 3.5.1 Import dialog
+### [x] Task subsection 3.5.1 Import dialog
 > Show supported formats `.txt`, `.md` > file size limit > selected file details > import action.
 
-### [ ] Task subsection 3.5.2 Import into new document
+### [x] Task subsection 3.5.2 Import into new document
 > Upload file > create document from file > title from file name > content from file text > open editor after success.
 
 ### [ ] Task subsection 3.5.3 Import history optional
@@ -314,37 +314,37 @@
 ### [ ] Task subsection 3.5.3a Attachment/original-file UI optional
 > Show attached/original upload file name if R2 storage is enabled > allow download link through authorized API route > hide R2 object keys from UI.
 
-### [ ] Task subsection 3.5.4 Upload UI edge cases
+### [x] Task subsection 3.5.4 Upload UI edge cases
 > Cancel file picker > unsupported type > oversize file > parse error > duplicate file name > mobile file picker.
 
-## [ ] Task Section 3.6 Sharing UI
+## [x] Task Section 3.6 Sharing UI
 > Owner can grant access by email > shared docs visible to other seeded user.
 
-### [ ] Task subsection 3.6.1 Share dialog
+### [x] Task subsection 3.6.1 Share dialog
 > Open from editor toolbar > input target email > choose role if editor/viewer supported > submit.
 
-### [ ] Task subsection 3.6.2 Existing shares list
+### [x] Task subsection 3.6.2 Existing shares list
 > Show shared users > show role > show owner cannot be removed > optional revoke/update actions.
 
-### [ ] Task subsection 3.6.3 Shared state feedback
+### [x] Task subsection 3.6.3 Shared state feedback
 > Toast on success > inline error on invalid email > document list updates after share.
 
-### [ ] Task subsection 3.6.4 Sharing UI edge cases
+### [x] Task subsection 3.6.4 Sharing UI edge cases
 > Share with current user > duplicate share > unknown email > not owner > shared user switches account and sees document.
 
-## [ ] Task Section 3.7 Navigation and App Shell
+## [x] Task Section 3.7 Navigation and App Shell
 > Build first screen as usable app, not landing page.
 
-### [ ] Task subsection 3.7.1 App shell layout
+### [x] Task subsection 3.7.1 App shell layout
 > Header with product name, current user, user switch/logout > sidebar/list > editor surface.
 
-### [ ] Task subsection 3.7.2 Mobile navigation
+### [x] Task subsection 3.7.2 Mobile navigation
 > Compact list and editor views > back button from editor to docs > FAB create button if useful.
 
-### [ ] Task subsection 3.7.3 Accessibility basics
+### [x] Task subsection 3.7.3 Accessibility basics
 > Keyboard reachable buttons > labels for inputs > visible focus > sufficient color contrast > dialogs trap focus via shadcn.
 
-### [ ] Task subsection 3.7.4 Visual QA
+### [x] Task subsection 3.7.4 Visual QA
 > Check no text overlap > check mobile and desktop > check buttons fit text > check editor toolbar not clipped.
 
 # [ ] Epic 4 Integration and End-to-End Product Flow

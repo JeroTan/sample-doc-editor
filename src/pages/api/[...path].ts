@@ -1,13 +1,11 @@
 import type { APIRoute } from "astro";
+import { env } from "cloudflare:workers";
 
 import { handleApiRequest } from "@/api/routes/router";
 
 export const prerender = false;
 
-const handler: APIRoute = async (context) => {
-  const locals = context.locals as typeof context.locals & { runtime: { env: Env } };
-  return handleApiRequest(context.request, locals.runtime.env);
-};
+const handler: APIRoute = async (context) => handleApiRequest(context.request, env);
 
 export const GET = handler;
 export const POST = handler;

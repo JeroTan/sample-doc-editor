@@ -1,29 +1,8 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import DocMeInApp from "@/features/documents/DocMeInApp";
 ---
 
 <Layout title="Doc-Me-In" html={{}}>
-  <main class="min-h-screen bg-background text-foreground">
-    <section class="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-5 py-6">
-      <header class="flex items-center justify-between border-b border-outline-variant pb-4">
-        <div>
-          <p class="text-xs font-semibold uppercase text-on-surface-variant">Collaborative editor MVP</p>
-          <h1 class="text-2xl font-bold text-on-surface md:text-[32px]">Doc-Me-In</h1>
-        </div>
-        <span class="rounded-full bg-primary-strong px-4 py-2 text-sm font-semibold text-on-primary">Setup ready</span>
-      </header>
-      <div class="grid flex-1 gap-4 md:grid-cols-[280px_1fr]">
-        <aside class="rounded-lg border border-outline-variant bg-surface-container-lowest p-4">
-          <p class="text-sm font-semibold text-on-surface">Document list</p>
-          <p class="mt-2 text-sm text-on-surface-variant">Epic 1 starts schema. Epic 2 wires API. Epic 3 replaces this setup shell with product UI.</p>
-        </aside>
-        <section class="rounded-lg border border-outline-variant bg-surface-container-lowest p-4">
-          <p class="text-sm font-semibold text-on-surface">Editor workspace</p>
-          <div class="mt-4 min-h-80 rounded-md border border-dashed border-outline-variant bg-surface p-4 text-sm text-on-surface-variant">
-            Toast UI editor mounts here in UI epic.
-          </div>
-        </section>
-      </div>
-    </section>
-  </main>
+  <DocMeInApp client:load />
 </Layout>
