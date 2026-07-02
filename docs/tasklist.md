@@ -1,14 +1,14 @@
 # [ ] Epic 0 PRD, Scope, and Delivery Guardrails
-## [ ] Task Section 0.1 Quick PRD Skill Pass
+## [x] Task Section 0.1 Quick PRD Skill Pass
 > Use product-requirements PRD skill > produce concise PRD from `docs/requirement.md` and `docs/user-source-of-truth.md` > check this task list against PRD before implementation starts.
 
-### [ ] Task subsection 0.1.1 Confirm source priority
+### [x] Task subsection 0.1.1 Confirm source priority
 > Treat `docs/user-source-of-truth.md` as override > use `docs/requirement.md` as assignment source > use `docs/design.md` for UI tokens > note `docs/sample-ui.md` if still empty.
 
-### [ ] Task subsection 0.1.2 Lock MVP scope
+### [x] Task subsection 0.1.2 Lock MVP scope
 > Target strongest 4-6 hour slice > prioritize document CRUD, rich-text editing, upload import, sharing, persistence, setup docs, deployed URL.
 
-### [ ] Task subsection 0.1.3 Record deliberate cuts
+### [x] Task subsection 0.1.3 Record deliberate cuts
 > Mark incomplete or deferred features in `README.md`, architecture note, and `SUBMISSION.md` > explain what would be built with another 2-4 hours.
 
 ## [ ] Task Section 0.2 Project Setup Guardrails
