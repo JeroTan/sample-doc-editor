@@ -1,0 +1,2 @@
+-- Epic 1 owns the full D1 schema.
+-- This placeholder keeps setup scripts stable until schema work starts.

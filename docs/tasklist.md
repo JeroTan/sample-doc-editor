@@ -1,4 +1,4 @@
-# [ ] Epic 0 PRD, Scope, and Delivery Guardrails
+# [x] Epic 0 PRD, Scope, and Delivery Guardrails for Doc-Me-In
 ## [x] Task Section 0.1 Quick PRD Skill Pass
 > Use product-requirements PRD skill > produce concise PRD from `docs/requirement.md` and `docs/user-source-of-truth.md` > check this task list against PRD before implementation starts.
 
@@ -11,26 +11,26 @@
 ### [x] Task subsection 0.1.3 Record deliberate cuts
 > Mark incomplete or deferred features in `README.md`, architecture note, and `SUBMISSION.md` > explain what would be built with another 2-4 hours.
 
-## [ ] Task Section 0.2 Project Setup Guardrails
+## [x] Task Section 0.2 Project Setup Guardrails
 > Scaffold Astro + Cloudflare Worker exactly as user source requires > keep implementation aligned with Cloudflare D1 deployment.
 
-### [ ] Task subsection 0.2.1 Scaffold exact versions
+### [x] Task subsection 0.2.1 Scaffold exact versions
 > Run `npm create astro@latest` > ensure Astro `6.1.9` > ensure TypeScript `5.9.3` > verify versions in `package.json`.
 
-### [ ] Task subsection 0.2.2 Add required frontend stack
-> Add React for interactive editor > follow bulletproof-react folder ideas > add Tailwind CSS > add shadcn components > add lucide icons > add Toast UI editor > add toastify notifications.
+### [x] Task subsection 0.2.2 Add required frontend stack
+> Add React 19 for interactive editor > follow bulletproof-react folder ideas > add Tailwind CSS > add shadcn components > add lucide icons > add Toast UI core editor with vanilla `useEffect` mount > add toastify notifications.
 
-### [ ] Task subsection 0.2.3 Add required platform stack
-> Add `@astrojs/cloudflare` > add Wrangler config > set Worker entry at `src/cloudflare/worker.ts` > bind D1 as `DB` > database name `sample-doc-editor-database`.
+### [x] Task subsection 0.2.3 Add required platform stack
+> Add `@astrojs/cloudflare` > add root-only Wrangler config with no development Worker env > set Worker entry at `src/cloudflare/worker.ts` > bind D1 as `DB` > database name `sample-doc-editor-database`.
 
-### [ ] Task subsection 0.2.4 Add required quality stack
+### [x] Task subsection 0.2.4 Add required quality stack
 > Add Vitest > add `astro check` > add scripts for `build`, `test`, `check`, `wrangler-types`, `wrangler-dev`, deploy.
 
-### [ ] Task subsection 0.2.5 Sync Cloudflare types
+### [x] Task subsection 0.2.5 Sync Cloudflare types
 > After any `wrangler.jsonc` binding change > immediately run `npm run wrangler-types` > commit generated type updates if created.
 
-### [ ] Task subsection 0.2.6 Use safe helper locations
-> Put atomic helpers in `src/lib` or `src/utility` > put dependency-free utilities near domain helpers > avoid duplicated inline logic.
+### [x] Task subsection 0.2.6 Use safe helper locations
+> Put atomic helpers in `src/lib` or `src/utils` > put dependency-free utilities near domain helpers > avoid duplicated inline logic.
 
 # [ ] Epic 1 Schema and Persistence
 ## [ ] Task Section 1.1 D1 Database Plan
@@ -82,10 +82,10 @@
 > Use Wrangler D1 local execute/migrations command > verify tables exist > verify seeds inserted.
 
 ### [ ] Task subsection 1.3.2 Run remote migration
-> Use configured D1 database `sample-doc-editor-database` > run migration remote > verify no auth failure > ask user if login needed.
+> Use configured root D1 database `sample-doc-editor-database` > run migration remote with no Wrangler env flag > verify no auth failure > ask user if login needed.
 
 ### [ ] Task subsection 1.3.3 Record migration commands
-> Add exact commands to README > include local reset/reseed command if implemented.
+> Add exact root Worker commands to README > include local reset/reseed command if implemented.
 
 ## [ ] Task Section 1.4 Persistence Edge Cases
 > Guard against malformed data before API and UI rely on database.
@@ -209,7 +209,7 @@
 > Use `{ error: { code, message, details? } }` > map validation, auth, permission, not found, server errors.
 
 ### [ ] Task subsection 2.6.3 Input validation
-> Validate strings, IDs, roles, file sizes, file types > centralize reusable validators in `src/lib` or `src/utility`.
+> Validate strings, IDs, roles, file sizes, file types > centralize reusable validators in `src/lib` or `src/utils`.
 
 ### [ ] Task subsection 2.6.4 Security basics
 > Escape unsafe content where rendered outside editor > avoid SQL injection by using prepared statements > avoid leaking private docs.
@@ -441,7 +441,7 @@
 > State `.txt` and `.md` supported > state `.docx` unsupported if not implemented > list file size limit.
 
 ### [ ] Task subsection 6.1.4 Deployment instructions
-> Include Cloudflare Worker deploy command > D1 remote migration command > live URL placeholder/result.
+> Include root Cloudflare Worker deploy command > D1 remote migration command with no development env > live URL placeholder/result.
 
 ### [ ] Task subsection 6.1.5 Partial/incomplete section
 > List working features > incomplete features > next 2-4 hour plan.
@@ -511,7 +511,7 @@
 > Run Wrangler command that needs auth > if not authenticated, ask user to login.
 
 ### [ ] Task subsection 7.1.2 Verify D1 binding
-> Confirm `sample-doc-editor-database` binding id in `wrangler.jsonc` > run `npm run wrangler-types` after config update.
+> Confirm `sample-doc-editor-database` binding id in root `wrangler.jsonc` > run `npm run wrangler-types` after config update.
 
 ### [ ] Task subsection 7.1.3 Run remote migration
 > Apply schema and seed data to remote D1 > verify seeded users and docs exist.

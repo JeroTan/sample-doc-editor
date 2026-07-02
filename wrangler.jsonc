@@ -1,0 +1,30 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "main": "src/cloudflare/worker.ts",
+  "name": "doc-me-in",
+  "account_id": "8e6c0cd85435131ccf9936cc03cb62e5",
+  "compatibility_date": "2026-04-22",
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "preview_urls": false,
+  "workers_dev": true,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sample-doc-editor-database",
+      "database_id": "3157d8e9-4a51-45e3-893a-e0dac3a21956",
+      "remote": true
+    }
+  ],
+  "vars": {
+    "APP_NAME": "Doc-Me-In",
+    "SECRET_ENVIRONMENT_STATUS": "production"
+  }
+}

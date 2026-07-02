@@ -1,4 +1,4 @@
-# Product Requirements Document: Collaborative Document Editor MVP
+# Product Requirements Document: Doc-Me-In Collaborative Document Editor MVP
 
 **Version**: 1.0
 **Date**: 2026-07-02
@@ -9,7 +9,7 @@
 
 ## Executive Summary
 
-Build a lightweight collaborative document editor for Ajaia's internal productivity tooling assessment. The product should let reviewers create, edit, persist, upload, and share documents through a coherent full stack MVP inspired by Google Docs, without attempting full Google Docs parity.
+Build Doc-Me-In, a lightweight collaborative document editor for Ajaia's internal productivity tooling assessment. The product should let reviewers create, edit, persist, upload, and share documents through a coherent full stack MVP inspired by Google Docs, without attempting full Google Docs parity.
 
 The MVP prioritizes a narrow but complete product slice: rich-text document editing, file import, seeded-user sharing, D1 persistence, Cloudflare Worker deployment, automated tests, and clear submission documentation. Success depends on reviewer speed: they should understand, run, and verify the product quickly.
 
@@ -31,7 +31,7 @@ Total: 94/100
 
 **Current Situation**: The assignment asks for a realistic full stack product slice with ambiguous scope, tight delivery time, multiple surfaces, and explicit judgment around tradeoffs.
 
-**Proposed Solution**: Build a Cloudflare Worker-hosted Astro app with a React editor experience, D1 persistence, simple seeded-user sharing, and upload import into editable documents.
+**Proposed Solution**: Build Doc-Me-In as a Cloudflare Worker-hosted Astro app with a React editor experience, D1 persistence, simple seeded-user sharing, and upload import into editable documents.
 
 **Business Impact**: Reviewers can assess product judgment, full stack delivery, persistence design, access logic, UI usability, and AI-assisted engineering discipline in one focused workflow.
 
@@ -165,15 +165,17 @@ Total: 94/100
 
 ### Required Stack
 
+- Product name: Doc-Me-In
 - Astro `6.1.9`
 - TypeScript `5.9.3`
 - Cloudflare Worker deployment
 - Cloudflare D1 database: `sample-doc-editor-database`
+- Single root Worker deployment; no development Cloudflare Worker environment
 - React for interactive UI
 - Tailwind CSS
 - shadcn components with global customization from `docs/design.md`
 - lucide icons
-- Toast UI editor
+- Toast UI core editor rendered from React with `useEffect`
 - toastify notifications
 - Vitest
 
@@ -184,6 +186,7 @@ Total: 94/100
 - No dependency injection required for MVP.
 - Use bulletproof-react-inspired feature structure where practical.
 - Run D1 migrations locally and remotely. If Wrangler auth fails, ask user.
+- Use root Wrangler commands without `--env development`.
 
 ### Security
 
