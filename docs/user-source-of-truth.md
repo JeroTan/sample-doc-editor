@@ -28,6 +28,8 @@ For jwt or any kind of auth please don't use bcrypt! just web crypto and later o
 
 All functions that CAN BE ATOMIC must be written in /utility or /lib.
 
+Auth seed credential for MVP reviewer login is provided separately by the project owner.
+
 If you are implementing API: Please separate it into routes, controller, service, model.
 Though no need for Dependency Injection for this Assessment MVP, just make it routes < controllers < service < model
 

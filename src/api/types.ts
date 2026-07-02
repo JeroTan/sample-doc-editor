@@ -72,3 +72,12 @@ export type DbShareRow = {
   created_at: string;
   updated_at: string;
 };
+
+export type DbAuthCredentialRow = {
+  user_id: string;
+  email: string;
+  password_salt: string;
+  password_hash: string;
+  created_at: string;
+  updated_at: string;
+};

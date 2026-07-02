@@ -68,6 +68,20 @@ export const documentApi = {
     });
   },
 
+  login(input: { email: string; password: string }) {
+    return apiRequest<SessionProfile>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+  },
+
+  register(input: { displayName: string; email: string; password: string }) {
+    return apiRequest<SessionProfile>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify(input),
+    });
+  },
+
   logout() {
     return apiRequest<{ deleted: true }>("/api/session", {
       method: "DELETE",

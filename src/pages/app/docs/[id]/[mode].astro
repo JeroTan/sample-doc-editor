@@ -1,0 +1,13 @@
+---
+import DocMeInApp from "@/features/documents/DocMeInApp";
+import Layout from "@/layouts/Layout.astro";
+
+export const prerender = false;
+
+const { id, mode } = Astro.params;
+const initialMode = mode === "view" ? "view" : "edit";
+---
+
+<Layout title="Document | Doc-Me-In">
+  <DocMeInApp initialDocumentId={id} initialMode={initialMode} client:load />
+</Layout>

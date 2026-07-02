@@ -1,4 +1,5 @@
 import { normalizeDocumentTitle } from "../../lib/document-rules";
+import { createId } from "../../lib/ids";
 import { ApiError } from "../config/http";
 import { createDocument as insertDocument, deleteDocument as deleteDocumentRow, getDocumentForUser, getDocumentOwner, listOwnedDocuments, listSharedDocuments, markDocumentOpened, renameDocument, saveDocumentContent } from "../models/documents";
 import type { ApiEnv, User } from "../types";
@@ -117,10 +118,6 @@ export async function requireWritableDocument(env: ApiEnv, user: User, documentI
   }
 
   return document;
-}
-
-export function createId(prefix: string) {
-  return `${prefix}_${crypto.randomUUID().replaceAll("-", "")}`;
 }
 
 function asOptionalString(value: unknown) {

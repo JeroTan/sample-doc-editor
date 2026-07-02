@@ -347,6 +347,27 @@
 ### [x] Task subsection 3.7.4 Visual QA
 > Check no text overlap > check mobile and desktop > check buttons fit text > check editor toolbar not clipped.
 
+## [x] Task Section 3.8 Landing, Authentication, and URL-Aware Pages
+> Extend Epic 3 so reviewer can see clear page intent from URL and authenticate with credential shared separately by project owner.
+
+### [x] Task subsection 3.8.1 Landing page route
+> Add `/` landing page > show product name, human workspace hero image, customer-facing easy/fast/organized benefit copy, and links to login/register/app.
+
+### [x] Task subsection 3.8.2 Login page route
+> Add `/login` > credential form > blank inputs with placeholders > no visible seed credential notice > redirect to requested app URL after login.
+
+### [x] Task subsection 3.8.3 Registration page route
+> Add `/register` > create user with display name/email/password > use Web Crypto password hashing > set session cookie after registration.
+
+### [x] Task subsection 3.8.4 Credential auth API
+> Add `POST /api/auth/login` > add `POST /api/auth/register` > keep no bcrypt > store PBKDF2 password hash and salt in D1.
+
+### [x] Task subsection 3.8.5 URL-aware app pages
+> Add `/app` document list route > add `/app/docs/:id/view` read-only route > add `/app/docs/:id/edit` edit route > sync editor navigation with browser history.
+
+### [x] Task subsection 3.8.6 Page route documentation
+> Document landing, login, register, app, view, and edit URLs > note seed credential is shared separately > do not display or prefill credential in UI.
+
 # [ ] Epic 4 Integration and End-to-End Product Flow
 ## [ ] Task Section 4.1 Connect UI to API
 > Wire fetch clients through small typed helpers > keep API calls reusable.

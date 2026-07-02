@@ -24,6 +24,15 @@ npm run wrangler-types
 npm run dev
 ```
 
+Open:
+
+- Landing: `http://localhost:4321/`
+- Login: `http://localhost:4321/login`
+- Register: `http://localhost:4321/register`
+- Workspace: `http://localhost:4321/app`
+
+Seed credential is provided separately by project owner.
+
 ## Checks
 
 ```bash
@@ -66,6 +75,22 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 - `document_attachments.r2_key` stores the R2 object pointer for original files or attachments.
 - Original files belong in R2 bucket `sample-doc-editor-storage`; editable text/markdown/html stays in D1.
 
+`db/migrations/0003_credentials_auth.sql` adds credential authentication:
+
+- `auth_credentials` stores Web Crypto PBKDF2 password salt/hash.
+- Admin reviewer credential is seeded; credential value is shared separately.
+
+`db/migrations/0004_admin_sample_document.sql` adds `Admin Workspace Brief` for the seeded admin login.
+
+## Page Routes
+
+- `/` landing page
+- `/login` login form
+- `/register` registration form
+- `/app` document list/workspace shell
+- `/app/docs/:id/view` read-only document page
+- `/app/docs/:id/edit` editable document page
+
 ## Current Status
 
-Epic 0 setup, Epic 1 schema/migration, and Epic 2 API slices are complete. Full UI, integration, documentation diagrams, and deployment remain in later epics from `docs/tasklist.md`.
+Epic 0 setup, Epic 1 schema/migration, Epic 2 API, and Epic 3 core UI/auth/page routes are complete. Integration, documentation diagrams, and deployment remain in later epics from `docs/tasklist.md`.

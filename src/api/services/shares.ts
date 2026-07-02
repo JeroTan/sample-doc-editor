@@ -1,8 +1,9 @@
+import { createId } from "../../lib/ids";
 import { ApiError } from "../config/http";
 import { createShare, deleteShare, getShareById, listShares, updateShareRole } from "../models/shares";
 import { findUserByEmail } from "../models/users";
 import type { ApiEnv, User } from "../types";
-import { createId, requireOwner } from "./documents";
+import { requireOwner } from "./documents";
 
 export async function listDocumentShares(env: ApiEnv, user: User, documentId: string) {
   await requireOwner(env, user, documentId);

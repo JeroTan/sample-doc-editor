@@ -1,5 +1,5 @@
 import { createDocumentController, deleteDocumentController, getDocumentController, listDocumentsController, renameDocumentController, saveDocumentContentController } from "../controllers/documents-controller";
-import { getMeController, logoutController, startSessionController } from "../controllers/session-controller";
+import { getMeController, loginController, logoutController, registerController, startSessionController } from "../controllers/session-controller";
 import { grantShareController, listSharesController, revokeShareController, updateShareController } from "../controllers/shares-controller";
 import { importIntoDocumentController, importUploadController } from "../controllers/uploads-controller";
 import { errorResponse, methodNotAllowed, notFound } from "../config/http";
@@ -33,6 +33,16 @@ async function dispatchApiRequest(request: Request, env: ApiEnv): Promise<Respon
   if (apiSegments.length === 1 && apiSegments[0] === "session") {
     if (method === "POST") return startSessionController(request, env);
     if (method === "DELETE") return logoutController();
+    return methodNotAllowed();
+  }
+
+  if (apiSegments.length === 2 && apiSegments[0] === "auth" && apiSegments[1] === "login") {
+    if (method === "POST") return loginController(request, env);
+    return methodNotAllowed();
+  }
+
+  if (apiSegments.length === 2 && apiSegments[0] === "auth" && apiSegments[1] === "register") {
+    if (method === "POST") return registerController(request, env);
     return methodNotAllowed();
   }
 

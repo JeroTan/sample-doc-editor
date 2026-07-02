@@ -1,8 +1,9 @@
 import { decodeImportText, normalizeDocumentTitle, validateImportFile } from "../../lib/document-rules";
+import { createId } from "../../lib/ids";
 import { ApiError } from "../config/http";
 import { createAttachmentRecord, createImportRecord } from "../models/imports";
 import type { ApiEnv, User } from "../types";
-import { createId, createUserDocument, requireWritableDocument, updateDocumentContent } from "./documents";
+import { createUserDocument, requireWritableDocument, updateDocumentContent } from "./documents";
 
 export async function importUploadAsDocument(env: ApiEnv, user: User, request: Request) {
   const parsed = await parseImportFile(env, user, request);

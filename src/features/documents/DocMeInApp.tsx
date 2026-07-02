@@ -4,9 +4,11 @@ import { validateImportFile } from "@/lib/document-rules";
 import {
   AlertCircle,
   ChevronLeft,
+  Eye,
   FileText,
   LoaderCircle,
   LogOut,
+  Pencil,
   Plus,
   Save,
   Search,
@@ -28,7 +30,6 @@ import {
   displayDocumentTitle,
   formatUpdatedAt,
   getFriendlyError,
-  SEEDED_USERS,
   splitDocumentSections,
 } from "./ui-state";
 
@@ -37,6 +38,12 @@ const EMPTY_BUCKETS: DocumentBuckets = { owned: [], shared: [] };
 
 type UploadMode = "new" | "replace";
 type MobileView = "list" | "editor";
+type PageMode = "view" | "edit";
+
+type DocMeInAppProps = {
+  initialDocumentId?: string;
+  initialMode?: PageMode;
+};
 
 type EditorDraft = {
   html: string;
@@ -44,7 +51,7 @@ type EditorDraft = {
   text: string;
 };
 
-export default function DocMeInApp() {
+export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: DocMeInAppProps) {
   const [profile, setProfile] = useState<SessionProfile | null>(null);
   const [documents, setDocuments] = useState<DocumentBuckets>(EMPTY_BUCKETS);
   const [selectedDocument, setSelectedDocument] = useState<DocumentDetail | null>(null);
@@ -55,8 +62,8 @@ export default function DocMeInApp() {
   const [documentsLoading, setDocumentsLoading] = useState(false);
   const [documentLoading, setDocumentLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [switchingUserEmail, setSwitchingUserEmail] = useState<string | null>(null);
   const [dirty, setDirty] = useState(false);
+  const [pageMode, setPageMode] = useState<PageMode>(initialMode);
   const [mobileView, setMobileView] = useState<MobileView>("list");
   const [shellError, setShellError] = useState<string | null>(null);
   const [uploadOpen, setUploadOpen] = useState(false);
@@ -82,8 +89,9 @@ export default function DocMeInApp() {
     selectedDocumentRef.current = selectedDocument;
   }, [selectedDocument]);
 
-  const applySelectedDocument = useCallback((document: DocumentDetail) => {
+  const applySelectedDocument = useCallback((document: DocumentDetail, mode: PageMode, navigate = true) => {
     const title = displayDocumentTitle(document.title);
+    const resolvedMode = mode === "edit" && !canEditDocument(document) ? "view" : mode;
     setSelectedDocument(document);
     setTitleDraft(title);
     setEditorDraft({
@@ -91,9 +99,15 @@ export default function DocMeInApp() {
       markdown: document.contentMarkdown ?? "",
       text: document.contentText ?? "",
     });
+    setPageMode(resolvedMode);
     setDirty(false);
     setMobileView("editor");
     localStorage.setItem(SELECTED_DOCUMENT_KEY, document.id);
+    if (navigate) {
+      navigateToDocument(document.id, resolvedMode);
+    } else if (window.location.pathname.startsWith("/app/docs/")) {
+      replaceDocumentUrl(document.id, resolvedMode);
+    }
   }, []);
 
   const refreshDocuments = useCallback(async () => {
@@ -108,7 +122,7 @@ export default function DocMeInApp() {
   }, []);
 
   const openDocument = useCallback(
-    async (documentId: string, options: { force?: boolean } = {}) => {
+    async (documentId: string, options: { force?: boolean; mode?: PageMode; navigate?: boolean } = {}) => {
       if (dirtyRef.current && !options.force && !window.confirm("Discard unsaved changes?")) {
         return;
       }
@@ -116,7 +130,8 @@ export default function DocMeInApp() {
       setDocumentLoading(true);
       try {
         const { document } = await documentApi.getDocument(documentId);
-        applySelectedDocument(document);
+        const nextMode = options.mode ?? (canEditDocument(document) ? "edit" : "view");
+        applySelectedDocument(document, nextMode, options.navigate ?? true);
       } catch (error) {
         toast.error(getFriendlyError(error));
       } finally {
@@ -137,19 +152,18 @@ export default function DocMeInApp() {
         }
 
         setProfile(currentProfile);
-        const nextDocuments = await refreshDocuments();
-        const restoredDocumentId = localStorage.getItem(SELECTED_DOCUMENT_KEY);
-        const firstDocument = getFirstAvailableDocument(nextDocuments);
-        const restoredDocument = restoredDocumentId ? findDocumentSummary(nextDocuments, restoredDocumentId) : null;
-        const documentToOpen = restoredDocument ?? firstDocument;
+        await refreshDocuments();
 
-        if (documentToOpen) {
-          await openDocument(documentToOpen.id, { force: true });
+        if (initialDocumentId) {
+          await openDocument(initialDocumentId, { force: true, mode: initialMode, navigate: false });
         }
       } catch (error) {
-        if (!(error instanceof ApiClientError && error.status === 401)) {
-          setShellError(getFriendlyError(error));
+        if (error instanceof ApiClientError && error.status === 401) {
+          window.location.assign(`/login?redirect=${encodeURIComponent(getCurrentAppPath())}`);
+          return;
         }
+
+        setShellError(getFriendlyError(error));
       } finally {
         if (active) {
           setBootLoading(false);
@@ -162,7 +176,24 @@ export default function DocMeInApp() {
     return () => {
       active = false;
     };
-  }, [openDocument, refreshDocuments]);
+  }, [initialDocumentId, initialMode, openDocument, refreshDocuments]);
+
+  useEffect(() => {
+    function handlePopState() {
+      const route = readCurrentDocumentRoute();
+      if (!route) {
+        setSelectedDocument(null);
+        setMobileView("list");
+        setDirty(false);
+        return;
+      }
+
+      void openDocument(route.documentId, { force: true, mode: route.mode, navigate: false });
+    }
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [openDocument]);
 
   const filteredDocuments = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
@@ -179,42 +210,8 @@ export default function DocMeInApp() {
   }, [documents, query]);
 
   const editable = canEditDocument(selectedDocument);
+  const editorActive = editable && pageMode === "edit";
   const shareable = canShareDocument(selectedDocument);
-
-  async function switchUser(email: string) {
-    if (dirtyRef.current && !window.confirm("Discard unsaved changes?")) {
-      return;
-    }
-
-    setSwitchingUserEmail(email);
-    setShellError(null);
-    try {
-      const nextProfile = await documentApi.startSession(email);
-      setProfile(nextProfile);
-      setSelectedDocument(null);
-      setTitleDraft("");
-      setEditorDraft({ html: "", markdown: "", text: "" });
-      setDirty(false);
-      setMobileView("list");
-
-      const nextDocuments = await refreshDocuments();
-      const firstDocument = getFirstAvailableDocument(nextDocuments);
-      if (firstDocument) {
-        await openDocument(firstDocument.id, { force: true });
-      } else {
-        localStorage.removeItem(SELECTED_DOCUMENT_KEY);
-      }
-
-      toast.success(`Signed in as ${nextProfile.user.displayName}.`);
-    } catch (error) {
-      const message = getFriendlyError(error);
-      setShellError(message);
-      toast.error(message);
-    } finally {
-      setSwitchingUserEmail(null);
-      setBootLoading(false);
-    }
-  }
 
   async function logout() {
     if (dirtyRef.current && !window.confirm("Discard unsaved changes?")) {
@@ -229,6 +226,7 @@ export default function DocMeInApp() {
       setDirty(false);
       setMobileView("list");
       localStorage.removeItem(SELECTED_DOCUMENT_KEY);
+      window.location.assign("/login");
     } catch (error) {
       toast.error(getFriendlyError(error));
     }
@@ -239,7 +237,7 @@ export default function DocMeInApp() {
     try {
       const { document } = await documentApi.createDocument();
       await refreshDocuments();
-      applySelectedDocument(document);
+      applySelectedDocument(document, "edit");
       toast.success("Document created.");
     } catch (error) {
       toast.error(getFriendlyError(error));
@@ -249,7 +247,7 @@ export default function DocMeInApp() {
   }
 
   async function saveDocument() {
-    if (!selectedDocument || !editable) {
+    if (!selectedDocument || !editorActive) {
       return;
     }
 
@@ -282,7 +280,7 @@ export default function DocMeInApp() {
         nextDocument = (await documentApi.renameDocument(selectedDocument.id, titleDraft)).document;
       }
 
-      applySelectedDocument(nextDocument);
+      applySelectedDocument(nextDocument, pageMode);
       await refreshDocuments();
       toast.success("Saved.");
     } catch (error) {
@@ -294,14 +292,37 @@ export default function DocMeInApp() {
 
   function updateTitle(value: string) {
     setTitleDraft(value);
-    if (editable) {
+    if (editorActive) {
       setDirty(true);
     }
   }
 
+  function changeMode(nextMode: PageMode) {
+    if (!selectedDocument) {
+      return;
+    }
+
+    if (nextMode === "view" && dirtyRef.current && !window.confirm("Discard unsaved changes?")) {
+      return;
+    }
+
+    const resolvedMode = nextMode === "edit" && !canEditDocument(selectedDocument) ? "view" : nextMode;
+    if (resolvedMode === "view") {
+      setTitleDraft(displayDocumentTitle(selectedDocument.title));
+      setEditorDraft({
+        html: selectedDocument.contentHtml ?? "",
+        markdown: selectedDocument.contentMarkdown ?? "",
+        text: selectedDocument.contentText ?? "",
+      });
+    }
+    setPageMode(resolvedMode);
+    setDirty(false);
+    navigateToDocument(selectedDocument.id, resolvedMode);
+  }
+
   const handleEditorChange = useCallback((value: { html: string; markdown: string }) => {
     const activeDocument = selectedDocumentRef.current;
-    if (!canEditDocument(activeDocument)) {
+    if (!canEditDocument(activeDocument) || pageMode !== "edit") {
       return;
     }
 
@@ -311,7 +332,7 @@ export default function DocMeInApp() {
       text: getContentText(value.html, value.markdown),
     });
     setDirty(true);
-  }, []);
+  }, [pageMode]);
 
   function openUploadDialog(mode: UploadMode) {
     setUploadMode(mode);
@@ -348,13 +369,13 @@ export default function DocMeInApp() {
     setUploading(true);
     try {
       const { document } =
-        uploadMode === "replace" && selectedDocument && editable
+        uploadMode === "replace" && selectedDocument && editorActive
           ? await documentApi.importIntoDocument(selectedDocument.id, selectedFile)
           : await documentApi.uploadDocument(selectedFile);
 
       setUploadOpen(false);
       await refreshDocuments();
-      applySelectedDocument(document);
+      applySelectedDocument(document, "edit");
       toast.success(uploadMode === "replace" ? "Imported into document." : "Imported document.");
     } catch (error) {
       setUploadError(getFriendlyError(error));
@@ -448,10 +469,11 @@ export default function DocMeInApp() {
     return (
       <main className="min-h-screen bg-background px-5 py-6 text-on-surface">
         <ToastContainer position="bottom-right" hideProgressBar newestOnTop />
-        <section className="mx-auto flex min-h-[calc(100vh-48px)] w-full max-w-4xl flex-col justify-center gap-6">
+        <section className="mx-auto flex min-h-[calc(100vh-48px)] w-full max-w-xl flex-col justify-center gap-5">
           <div>
-            <p className="text-xs font-semibold uppercase text-on-surface-variant">Document workspace</p>
+            <p className="text-xs font-semibold uppercase text-on-surface-variant">Authentication required</p>
             <h1 className="mt-2 text-3xl font-bold leading-10 text-on-surface md:text-[32px]">Doc-Me-In</h1>
+            <p className="mt-2 text-sm text-on-surface-variant">Sign in to open your document workspace.</p>
           </div>
           {shellError ? (
             <div className="flex items-start gap-2 rounded-lg border border-error bg-red-50 px-4 py-3 text-sm text-error">
@@ -459,23 +481,13 @@ export default function DocMeInApp() {
               <span>{shellError}</span>
             </div>
           ) : null}
-          <div className="grid gap-3 sm:grid-cols-3">
-            {SEEDED_USERS.map((user) => (
-              <button
-                key={user.email}
-                type="button"
-                onClick={() => switchUser(user.email)}
-                className="flex min-h-28 flex-col items-start justify-between rounded-lg border border-outline-variant bg-surface-container-lowest p-4 text-left shadow-[0_2px_8px_rgba(0,0,0,0.04)] transition hover:border-primary-strong hover:bg-soft-amber focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-strong text-sm font-bold text-on-primary">
-                  {user.initials}
-                </span>
-                <span>
-                  <span className="block font-semibold text-on-surface">{user.displayName}</span>
-                  <span className="block truncate text-sm text-on-surface-variant">{user.email}</span>
-                </span>
-              </button>
-            ))}
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" asChild>
+              <a href={`/login?redirect=${encodeURIComponent(getCurrentAppPath())}`}>Login</a>
+            </Button>
+            <Button type="button" variant="secondary" asChild>
+              <a href="/register">Register</a>
+            </Button>
           </div>
         </section>
       </main>
@@ -492,24 +504,9 @@ export default function DocMeInApp() {
             <h1 className="truncate text-xl font-bold leading-7 text-on-surface">Workspace</h1>
           </div>
           <div className="flex min-w-0 items-center gap-2">
-            <label className="sr-only" htmlFor="user-switcher">
-              Current user
-            </label>
-            <div className="hidden items-center gap-2 rounded-lg border border-outline-variant bg-surface px-3 py-2 text-sm text-on-surface-variant sm:flex">
+            <div className="hidden min-w-0 items-center gap-2 rounded-lg border border-outline-variant bg-surface px-3 py-2 text-sm text-on-surface-variant sm:flex">
               <UserRound className="h-4 w-4" aria-hidden="true" />
-              <select
-                id="user-switcher"
-                value={profile.user.email}
-                onChange={(event) => switchUser(event.target.value)}
-                className="max-w-44 bg-transparent font-semibold text-on-surface outline-none"
-                disabled={Boolean(switchingUserEmail)}
-              >
-                {SEEDED_USERS.map((user) => (
-                  <option key={user.email} value={user.email}>
-                    {switchingUserEmail === user.email ? "Switching..." : user.displayName}
-                  </option>
-                ))}
-              </select>
+              <span className="max-w-44 truncate font-semibold text-on-surface">{profile.user.email}</span>
             </div>
             <Button type="button" variant="ghost" size="icon" title="Logout" aria-label="Logout" onClick={logout}>
               <LogOut className="h-4 w-4" aria-hidden="true" />
@@ -591,11 +588,22 @@ export default function DocMeInApp() {
               <div className="flex min-h-0 flex-1 flex-col">
                 <div className="border-b border-outline-variant px-4 py-3 md:px-6">
                   <div className="mb-3 flex items-center justify-between gap-2 md:hidden">
-                    <Button type="button" variant="ghost" size="sm" onClick={() => setMobileView("list")}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setMobileView("list");
+                        window.history.pushState({}, "", "/app");
+                      }}
+                    >
                       <ChevronLeft className="h-4 w-4" aria-hidden="true" />
                       Docs
                     </Button>
-                    <RoleBadge role={selectedDocument.accessRole} />
+                    <div className="flex items-center gap-2">
+                      <ModeBadge mode={pageMode} />
+                      <RoleBadge role={selectedDocument.accessRole} />
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
@@ -607,7 +615,7 @@ export default function DocMeInApp() {
                         id="document-title"
                         value={titleDraft}
                         onChange={(event) => updateTitle(event.target.value)}
-                        disabled={!editable}
+                        disabled={!editorActive}
                         className="w-full min-w-0 rounded-lg border border-transparent bg-transparent px-0 py-1 text-2xl font-bold leading-8 text-on-surface outline-none focus:border-primary-strong focus:bg-surface focus:px-3 focus:ring-2 focus:ring-primary/20 disabled:text-on-surface"
                       />
                       <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-on-surface-variant">
@@ -623,7 +631,20 @@ export default function DocMeInApp() {
                       <div className="hidden md:block">
                         <RoleBadge role={selectedDocument.accessRole} />
                       </div>
+                      <div className="hidden md:block">
+                        <ModeBadge mode={pageMode} />
+                      </div>
                       {editable ? (
+                        <Button type="button" variant="secondary" onClick={() => changeMode(pageMode === "edit" ? "view" : "edit")}>
+                          {pageMode === "edit" ? (
+                            <Eye className="h-4 w-4" aria-hidden="true" />
+                          ) : (
+                            <Pencil className="h-4 w-4" aria-hidden="true" />
+                          )}
+                          {pageMode === "edit" ? "View" : "Edit"}
+                        </Button>
+                      ) : null}
+                      {editorActive ? (
                         <Button
                           type="button"
                           variant="secondary"
@@ -641,7 +662,7 @@ export default function DocMeInApp() {
                           Share
                         </Button>
                       ) : null}
-                      <Button type="button" onClick={saveDocument} disabled={!editable || !dirty || saving}>
+                      <Button type="button" onClick={saveDocument} disabled={!editorActive || !dirty || saving}>
                         {saving ? (
                           <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
                         ) : (
@@ -657,7 +678,7 @@ export default function DocMeInApp() {
                   <ToastEditor
                     key={selectedDocument.id}
                     initialValue={selectedDocument.contentMarkdown ?? ""}
-                    readOnly={!editable}
+                    readOnly={!editorActive}
                     height="calc(100vh - 248px)"
                     onChange={handleEditorChange}
                   />
@@ -700,7 +721,7 @@ export default function DocMeInApp() {
       {uploadOpen ? (
         <UploadDialog
           mode={uploadMode}
-          canReplace={Boolean(selectedDocument && editable)}
+          canReplace={Boolean(selectedDocument && editorActive)}
           file={selectedFile}
           error={uploadError}
           uploading={uploading}
@@ -801,6 +822,14 @@ function RoleBadge({ role, compact = false }: { role: DocumentSummary["accessRol
       }`}
     >
       {label}
+    </span>
+  );
+}
+
+function ModeBadge({ mode }: { mode: PageMode }) {
+  return (
+    <span className="inline-flex h-7 shrink-0 items-center rounded-full border border-outline-variant bg-soft-amber px-2 text-xs font-semibold text-on-surface">
+      {mode === "edit" ? "Edit" : "View"}
     </span>
   );
 }
@@ -1012,14 +1041,6 @@ function ShareDialog({
   );
 }
 
-function getFirstAvailableDocument(documents: DocumentBuckets) {
-  return documents.owned[0] ?? documents.shared[0] ?? null;
-}
-
-function findDocumentSummary(documents: DocumentBuckets, documentId: string) {
-  return [...documents.owned, ...documents.shared].find((document) => document.id === documentId) ?? null;
-}
-
 function getContentText(html: string, markdown: string) {
   const element = window.document.createElement("div");
   element.innerHTML = html;
@@ -1036,4 +1057,34 @@ function formatBytes(value: number) {
   }
 
   return `${(value / 1024 / 1024).toFixed(1)} MB`;
+}
+
+function navigateToDocument(documentId: string, mode: PageMode) {
+  const nextPath = `/app/docs/${encodeURIComponent(documentId)}/${mode}`;
+  if (window.location.pathname !== nextPath) {
+    window.history.pushState({}, "", nextPath);
+  }
+}
+
+function replaceDocumentUrl(documentId: string, mode: PageMode) {
+  const nextPath = `/app/docs/${encodeURIComponent(documentId)}/${mode}`;
+  if (window.location.pathname !== nextPath) {
+    window.history.replaceState({}, "", nextPath);
+  }
+}
+
+function getCurrentAppPath() {
+  return `${window.location.pathname}${window.location.search}`;
+}
+
+function readCurrentDocumentRoute() {
+  const match = window.location.pathname.match(/^\/app\/docs\/([^/]+)\/(view|edit)$/u);
+  if (!match) {
+    return null;
+  }
+
+  return {
+    documentId: decodeURIComponent(match[1]),
+    mode: match[2] as PageMode,
+  };
 }
