@@ -42,7 +42,8 @@ If you are presenting a details please use ">" to flow it down what to do. and y
 - do this > do this >
 - do this > do this >
  
-Be sure to start with functionality of the API. 
+Be sure to start with the schema then,
+the functionality of the API. 
 Then next the UI! 
 Then next integration.
 Please divide the Epic/task efficiently in actual basis of requirement.md but this one is dived-in including testing.
@@ -55,6 +56,8 @@ The creation process journey, the viewing process journey, the onboarding journe
 Show also the process flow diagram in a sense of API to UI.
 
 Add what I said to in the task since that is part of the task the documentation.
+
+Please also include at the very start of the task as to use user to make prd skill! When making PRD please make it quick and concise as we will make a task list anyway. Once done please check the task
 
 And as a final note, since it says upload something! please add things you can add like upload (though not everything I will be the one to make a video if you can't just unchecked it okay?)
 
