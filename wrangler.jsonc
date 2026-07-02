@@ -9,7 +9,7 @@
     "directory": "./dist",
     "binding": "ASSETS"
   },
-  "preview_urls": false,
+  "preview_urls": true,
   "workers_dev": true,
   "observability": {
     "enabled": true,
