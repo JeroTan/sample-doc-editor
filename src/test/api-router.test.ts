@@ -338,4 +338,111 @@ describe("API router", () => {
       r2ObjectCount: 1,
     });
   });
+
+  test("reviewer journey can login, create, save, upload, share, and reopen shared work", async () => {
+    const env = createEnv();
+    const adminLogin = await requestJson<{ data: { user: { email: string } } }>(env, "/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email: "admin@mail.com", password: "admin-ako-123" }),
+    });
+    const adminCookie = adminLogin.response.headers.get("set-cookie") ?? "";
+
+    const created = await requestJson<{ data: { document: { id: string; title: string } } }>(env, "/api/documents", {
+      method: "POST",
+      headers: { cookie: adminCookie },
+      body: JSON.stringify({ title: "Customer Plan" }),
+    });
+    const documentId = created.body.data.document.id;
+
+    const saved = await requestJson<{ data: { document: { contentMarkdown: string } } }>(
+      env,
+      `/api/documents/${documentId}/content`,
+      {
+        method: "PUT",
+        headers: { cookie: adminCookie },
+        body: JSON.stringify({
+          contentMarkdown: "## Launch Plan\n\n- Invite team",
+          contentHtml: "<h2>Launch Plan</h2><ul><li>Invite team</li></ul>",
+          contentText: "Launch Plan Invite team",
+        }),
+      },
+    );
+
+    const uploadForm = new FormData();
+    uploadForm.set("file", new File(["# Imported checklist"], "checklist.md", { type: "text/markdown" }));
+    const uploaded = await requestJson<{ data: { document: { title: string; contentMarkdown: string } } }>(
+      env,
+      "/api/uploads/import",
+      { method: "POST", headers: { cookie: adminCookie }, body: uploadForm },
+    );
+
+    const share = await requestJson<{ data: { share: { role: string; userEmail: string } } }>(
+      env,
+      `/api/documents/${documentId}/shares`,
+      {
+        method: "POST",
+        headers: { cookie: adminCookie },
+        body: JSON.stringify({ email: "bob@example.com", role: "viewer" }),
+      },
+    );
+
+    const bobSession = await requestJson<{ data: { user: { email: string } } }>(env, "/api/session", {
+      method: "POST",
+      body: JSON.stringify({ email: "bob@example.com" }),
+    });
+    const bobCookie = bobSession.response.headers.get("set-cookie") ?? "";
+    const bobList = await requestJson<{ data: { shared: Array<{ id: string; title: string; accessRole: string }> } }>(
+      env,
+      "/api/documents",
+      { headers: { cookie: bobCookie } },
+    );
+    const bobDetail = await requestJson<{ data: { document: { title: string; accessRole: string; contentMarkdown: string } } }>(
+      env,
+      `/api/documents/${documentId}`,
+      { headers: { cookie: bobCookie } },
+    );
+    const bobSave = await requestJson<{ error: { code: string } }>(env, `/api/documents/${documentId}/content`, {
+      method: "PUT",
+      headers: { cookie: bobCookie },
+      body: JSON.stringify({ contentMarkdown: "viewer edit attempt" }),
+    });
+
+    expect({
+      adminLogin: { status: adminLogin.response.status, email: adminLogin.body.data.user.email },
+      created: { status: created.response.status, title: created.body.data.document.title },
+      savedMarkdown: saved.body.data.document.contentMarkdown,
+      uploaded: {
+        status: uploaded.response.status,
+        title: uploaded.body.data.document.title,
+        markdown: uploaded.body.data.document.contentMarkdown,
+      },
+      share: { status: share.response.status, userEmail: share.body.data.share.userEmail, role: share.body.data.share.role },
+      bobSession: { status: bobSession.response.status, email: bobSession.body.data.user.email },
+      bobSharedDocument: bobList.body.data.shared
+        .map((document) => [document.id, document.title, document.accessRole])
+        .find((document) => document[0] === documentId),
+      bobDetail: {
+        title: bobDetail.body.data.document.title,
+        accessRole: bobDetail.body.data.document.accessRole,
+        contentMarkdown: bobDetail.body.data.document.contentMarkdown,
+      },
+      bobSave: { status: bobSave.response.status, code: bobSave.body.error.code },
+      r2ObjectCount: env.STORAGE.objects.size,
+    }).toEqual({
+      adminLogin: { status: 200, email: "admin@mail.com" },
+      created: { status: 201, title: "Customer Plan" },
+      savedMarkdown: "## Launch Plan\n\n- Invite team",
+      uploaded: { status: 201, title: "checklist", markdown: "# Imported checklist" },
+      share: { status: 201, userEmail: "bob@example.com", role: "viewer" },
+      bobSession: { status: 200, email: "bob@example.com" },
+      bobSharedDocument: [documentId, "Customer Plan", "viewer"],
+      bobDetail: {
+        title: "Customer Plan",
+        accessRole: "viewer",
+        contentMarkdown: "## Launch Plan\n\n- Invite team",
+      },
+      bobSave: { status: 403, code: "forbidden" },
+      r2ObjectCount: 1,
+    });
+  });
 });

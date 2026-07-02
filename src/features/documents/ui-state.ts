@@ -1,3 +1,5 @@
+import { ApiClientError } from "./api-client";
+
 export const SEEDED_USERS = [
   {
     displayName: "Alice Rivera",
@@ -72,4 +74,8 @@ export function getFriendlyError(error: unknown) {
   }
 
   return "Something went wrong.";
+}
+
+export function isSessionExpiredError(error: unknown) {
+  return error instanceof ApiClientError && error.status === 401;
 }

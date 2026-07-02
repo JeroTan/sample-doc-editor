@@ -105,4 +105,21 @@ describe("D1 schema contract", () => {
       },
     });
   });
+
+  test("seed documents use customer-facing copy", () => {
+    const db = createDatabase();
+    const rows = db
+      .prepare("SELECT content_markdown, content_text FROM documents WHERE id IN ('doc_alice_project_brief', 'doc_admin_welcome')")
+      .all() as Array<{ content_markdown: string; content_text: string }>;
+
+    const visibleCopy = rows.map((row) => `${row.content_markdown} ${row.content_text}`).join(" ");
+
+    expect({
+      hasSeedDocuments: rows.length,
+      hasTechnicalJargon: /verify|route|url|seeded|assessment|implementation|mvp/i.test(visibleCopy),
+    }).toEqual({
+      hasSeedDocuments: 2,
+      hasTechnicalJargon: false,
+    });
+  });
 });

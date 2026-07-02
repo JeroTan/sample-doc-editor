@@ -368,56 +368,56 @@
 ### [x] Task subsection 3.8.6 Page route documentation
 > Document landing, login, register, app, view, and edit URLs > note seed credential is shared separately > do not display or prefill credential in UI.
 
-# [ ] Epic 4 Integration and End-to-End Product Flow
-## [ ] Task Section 4.1 Connect UI to API
+# [x] Epic 4 Integration and End-to-End Product Flow
+## [x] Task Section 4.1 Connect UI to API
 > Wire fetch clients through small typed helpers > keep API calls reusable.
 
-### [ ] Task subsection 4.1.1 API client helpers
+### [x] Task subsection 4.1.1 API client helpers
 > Create `src/lib/api-client` or feature-local client > handle JSON success/error > handle multipart upload.
 
-### [ ] Task subsection 4.1.2 State management
+### [x] Task subsection 4.1.2 State management
 > Use React state or lightweight store > track current user, docs list, selected doc, dirty editor, loading states.
 
-### [ ] Task subsection 4.1.3 Refresh strategy
+### [x] Task subsection 4.1.3 Refresh strategy
 > After create/save/share/upload > refresh document list or update local cache > avoid stale owned/shared sections.
 
-### [ ] Task subsection 4.1.4 Integration edge cases
+### [x] Task subsection 4.1.4 Integration edge cases
 > API unavailable > session expired mid-edit > slow save > repeated save clicks > upload while document loading.
 
-## [ ] Task Section 4.2 User Journeys
+## [x] Task Section 4.2 User Journeys
 > Verify each required journey works from browser.
 
-### [ ] Task subsection 4.2.1 Onboarding journey
-> Open app > choose seeded user > see dashboard > understand owned/shared docs.
+### [x] Task subsection 4.2.1 Onboarding journey
+> Open app > sign in > see dashboard > understand owned/shared docs.
 
-### [ ] Task subsection 4.2.2 Creation journey
+### [x] Task subsection 4.2.2 Creation journey
 > Create document > rename > edit rich text > save > refresh > reopen > formatting remains.
 
-### [ ] Task subsection 4.2.3 Viewing journey
-> Switch to shared user > see shared document in shared section > open document > permission behavior correct.
+### [x] Task subsection 4.2.3 Viewing journey
+> Switch session/login to shared user > see shared document in shared section > open document > permission behavior correct.
 
-### [ ] Task subsection 4.2.4 Updating/modification journey
+### [x] Task subsection 4.2.4 Updating/modification journey
 > Edit existing document > save > switch away/back > reopen > changes persist > shared visibility updated if allowed.
 
-### [ ] Task subsection 4.2.5 Upload journey
+### [x] Task subsection 4.2.5 Upload journey
 > Upload `.txt` or `.md` > new editable document opens > imported content persisted > import metadata stored.
 
-### [ ] Task subsection 4.2.6 Sharing journey
+### [x] Task subsection 4.2.6 Sharing journey
 > Owner opens share dialog > grants another seeded user access > switch to target user > target sees document.
 
-## [ ] Task Section 4.3 Browser Verification
+## [x] Task Section 4.3 Browser Verification
 > Run app locally > inspect in browser > fix visible bugs before final.
 
-### [ ] Task subsection 4.3.1 Start dev server
+### [x] Task subsection 4.3.1 Start dev server
 > Run local Astro dev or Wrangler dev > provide local URL > ensure no port conflict.
 
-### [ ] Task subsection 4.3.2 Desktop browser check
+### [x] Task subsection 4.3.2 Desktop browser check
 > Check dashboard > editor > upload > share > refresh persistence > console errors.
 
-### [ ] Task subsection 4.3.3 Mobile browser check
+### [x] Task subsection 4.3.3 Mobile browser check
 > Check small viewport > navigation > editor controls > dialogs > text fit.
 
-### [ ] Task subsection 4.3.4 Worker preview check
+### [x] Task subsection 4.3.4 Worker preview check
 > Run `wrangler-dev` or Worker preview path > verify D1 binding works > verify API routes work in Worker runtime.
 
 # [ ] Epic 5 Testing

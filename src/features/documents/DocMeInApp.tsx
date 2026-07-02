@@ -30,6 +30,7 @@ import {
   displayDocumentTitle,
   formatUpdatedAt,
   getFriendlyError,
+  isSessionExpiredError,
   splitDocumentSections,
 } from "./ui-state";
 
@@ -89,6 +90,16 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
     selectedDocumentRef.current = selectedDocument;
   }, [selectedDocument]);
 
+  const handleInteractionError = useCallback((error: unknown) => {
+    if (isSessionExpiredError(error)) {
+      window.location.assign(`/login?redirect=${encodeURIComponent(getCurrentAppPath())}`);
+      return true;
+    }
+
+    toast.error(getFriendlyError(error));
+    return false;
+  }, []);
+
   const applySelectedDocument = useCallback((document: DocumentDetail, mode: PageMode, navigate = true) => {
     const title = displayDocumentTitle(document.title);
     const resolvedMode = mode === "edit" && !canEditDocument(document) ? "view" : mode;
@@ -133,12 +144,12 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
         const nextMode = options.mode ?? (canEditDocument(document) ? "edit" : "view");
         applySelectedDocument(document, nextMode, options.navigate ?? true);
       } catch (error) {
-        toast.error(getFriendlyError(error));
+        handleInteractionError(error);
       } finally {
         setDocumentLoading(false);
       }
     },
-    [applySelectedDocument],
+    [applySelectedDocument, handleInteractionError],
   );
 
   useEffect(() => {
@@ -228,7 +239,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       localStorage.removeItem(SELECTED_DOCUMENT_KEY);
       window.location.assign("/login");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     }
   }
 
@@ -240,7 +251,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       applySelectedDocument(document, "edit");
       toast.success("Document created.");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     } finally {
       setDocumentLoading(false);
     }
@@ -284,7 +295,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       await refreshDocuments();
       toast.success("Saved.");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     } finally {
       setSaving(false);
     }
@@ -378,8 +389,9 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       applySelectedDocument(document, "edit");
       toast.success(uploadMode === "replace" ? "Imported into document." : "Imported document.");
     } catch (error) {
-      setUploadError(getFriendlyError(error));
-      toast.error(getFriendlyError(error));
+      if (!handleInteractionError(error)) {
+        setUploadError(getFriendlyError(error));
+      }
     } finally {
       setUploading(false);
     }
@@ -402,7 +414,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       const result = await documentApi.listShares(documentId);
       setShares(result.shares);
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     } finally {
       setSharesLoading(false);
     }
@@ -421,7 +433,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       await refreshDocuments();
       toast.success("Shared.");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     } finally {
       setSharing(false);
     }
@@ -437,7 +449,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       await loadShares(selectedDocument.id);
       toast.success("Share updated.");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     }
   }
 
@@ -452,7 +464,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       await refreshDocuments();
       toast.success("Share removed.");
     } catch (error) {
-      toast.error(getFriendlyError(error));
+      handleInteractionError(error);
     }
   }
 

@@ -176,11 +176,16 @@ async function apiRequest<TData>(path: string, init: RequestInit = {}) {
     headers.set("content-type", "application/json");
   }
 
-  const response = await fetch(path, {
-    ...init,
-    credentials: "same-origin",
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(path, {
+      ...init,
+      credentials: "same-origin",
+      headers,
+    });
+  } catch (error) {
+    throw new ApiClientError(0, "network_error", "Cannot reach Doc-Me-In. Check your connection and try again.", error);
+  }
 
   return readApiPayload<TData>(response);
 }

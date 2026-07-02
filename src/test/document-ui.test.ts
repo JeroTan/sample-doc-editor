@@ -1,7 +1,7 @@
-import { describe, expect, test } from "vitest";
+import { afterEach, describe, expect, test, vi } from "vitest";
 
-import { ApiClientError, readApiPayload } from "../features/documents/api-client";
-import { canEditDocument, canShareDocument, SEEDED_USERS, splitDocumentSections } from "../features/documents/ui-state";
+import { ApiClientError, documentApi, readApiPayload } from "../features/documents/api-client";
+import { canEditDocument, canShareDocument, isSessionExpiredError, SEEDED_USERS, splitDocumentSections } from "../features/documents/ui-state";
 
 describe("document UI state", () => {
   test("seeded user selector exposes reviewer-ready accounts in stable order", () => {
@@ -38,6 +38,10 @@ describe("document UI state", () => {
 });
 
 describe("document API client", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   test("reads data envelopes and exposes API errors", async () => {
     await expect(readApiPayload(new Response(JSON.stringify({ data: { id: "doc_1" } })))).resolves.toEqual({
       id: "doc_1",
@@ -50,5 +54,20 @@ describe("document API client", () => {
         }),
       ),
     ).rejects.toEqual(new ApiClientError(400, "title_too_long", "Title must be 120 characters or fewer."));
+  });
+
+  test("reports API outage with stable user-facing error", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new TypeError("fetch failed"));
+
+    await expect(documentApi.listDocuments()).rejects.toMatchObject({
+      status: 0,
+      code: "network_error",
+      message: "Cannot reach Doc-Me-In. Check your connection and try again.",
+    });
+  });
+
+  test("identifies expired sessions for login redirect", () => {
+    expect(isSessionExpiredError(new ApiClientError(401, "unauthorized", "Sign in first."))).toBe(true);
+    expect(isSessionExpiredError(new ApiClientError(0, "network_error", "Cannot reach Doc-Me-In. Check your connection and try again."))).toBe(false);
   });
 });

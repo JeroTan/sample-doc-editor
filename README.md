@@ -82,6 +82,8 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 
 `db/migrations/0004_admin_sample_document.sql` adds `Admin Workspace Brief` for the seeded admin login.
 
+`db/migrations/0005_humanized_seed_documents.sql` updates seed document copy so the app reads like a customer-facing workspace.
+
 ## Page Routes
 
 - `/` landing page
@@ -93,4 +95,4 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 
 ## Current Status
 
-Epic 0 setup, Epic 1 schema/migration, Epic 2 API, and Epic 3 core UI/auth/page routes are complete. Integration, documentation diagrams, and deployment remain in later epics from `docs/tasklist.md`.
+Epic 0 setup, Epic 1 schema/migration, Epic 2 API, Epic 3 core UI/auth/page routes, and Epic 4 integration/browser verification are complete. Documentation diagrams and deployment remain in later epics from `docs/tasklist.md`.
