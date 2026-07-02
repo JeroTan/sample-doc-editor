@@ -50,6 +50,10 @@ export function canShareDocument(document: { accessRole: DocumentRole } | null |
   return document?.accessRole === "owner";
 }
 
+export function canDeleteDocument(document: { accessRole: DocumentRole } | null | undefined) {
+  return document?.accessRole === "owner";
+}
+
 export function formatUpdatedAt(value: string | null | undefined) {
   if (!value) {
     return "No updates";

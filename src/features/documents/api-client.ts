@@ -125,6 +125,12 @@ export const documentApi = {
     });
   },
 
+  deleteDocument(documentId: string) {
+    return apiRequest<{ deleted: true }>(`/api/documents/${documentId}`, {
+      method: "DELETE",
+    });
+  },
+
   uploadDocument(file: File) {
     const formData = new FormData();
     formData.set("file", file);

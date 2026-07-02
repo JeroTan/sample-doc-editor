@@ -28,6 +28,7 @@ import { ToastEditor } from "./components/ToastEditor";
 import { convertDocxToMarkdownFile, isDocxUpload } from "./docx-client-import";
 import {
   canEditDocument,
+  canDeleteDocument,
   canShareDocument,
   displayDocumentTitle,
   formatUpdatedAt,
@@ -65,6 +66,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
   const [documentsLoading, setDocumentsLoading] = useState(false);
   const [documentLoading, setDocumentLoading] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [dirty, setDirty] = useState(false);
   const [pageMode, setPageMode] = useState<PageMode>(initialMode);
   const [mobileView, setMobileView] = useState<MobileView>("list");
@@ -225,6 +227,7 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
   const editable = canEditDocument(selectedDocument);
   const editorActive = editable && pageMode === "edit";
   const shareable = canShareDocument(selectedDocument);
+  const deletable = canDeleteDocument(selectedDocument);
 
   async function logout() {
     if (dirtyRef.current && !window.confirm("Discard unsaved changes?")) {
@@ -300,6 +303,35 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
       handleInteractionError(error);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function deleteSelectedDocument() {
+    if (!selectedDocument || !deletable) {
+      return;
+    }
+
+    const title = displayDocumentTitle(selectedDocument.title);
+    if (!window.confirm(`Delete "${title}"? This cannot be undone.`)) {
+      return;
+    }
+
+    setDeleting(true);
+    try {
+      await documentApi.deleteDocument(selectedDocument.id);
+      await refreshDocuments();
+      setSelectedDocument(null);
+      setTitleDraft("");
+      setEditorDraft({ html: "", markdown: "", text: "" });
+      setDirty(false);
+      setMobileView("list");
+      localStorage.removeItem(SELECTED_DOCUMENT_KEY);
+      window.history.pushState({}, "", "/app");
+      toast.success("Document deleted.");
+    } catch (error) {
+      handleInteractionError(error);
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -680,6 +712,23 @@ export default function DocMeInApp({ initialDocumentId, initialMode = "edit" }: 
                         <Button type="button" variant="secondary" onClick={openShareDialog}>
                           <Share2 className="h-4 w-4" aria-hidden="true" />
                           Share
+                        </Button>
+                      ) : null}
+                      {deletable ? (
+                        <Button
+                          type="button"
+                          variant="secondary"
+                          size="icon"
+                          title="Delete document"
+                          aria-label="Delete document"
+                          onClick={deleteSelectedDocument}
+                          disabled={deleting}
+                        >
+                          {deleting ? (
+                            <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />
+                          ) : (
+                            <Trash2 className="h-4 w-4 text-error" aria-hidden="true" />
+                          )}
                         </Button>
                       ) : null}
                       {editorActive ? (

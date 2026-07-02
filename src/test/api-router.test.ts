@@ -331,17 +331,25 @@ describe("API router", () => {
       `/api/documents/${id}`,
       { headers: { "x-user-email": "alice@example.com" } },
     );
+    const deleted = await requestJson<{ data: { deleted: true } }>(env, `/api/documents/${id}`, {
+      method: "DELETE",
+      headers: { "x-user-email": "alice@example.com" },
+    });
 
     expect({
       status: upload.response.status,
       title: detail.body.data.document.title,
       markdown: detail.body.data.document.contentMarkdown,
+      deleteStatus: deleted.response.status,
+      deleted: deleted.body.data.deleted,
       r2ObjectCount: env.STORAGE.objects.size,
     }).toEqual({
       status: 201,
       title: "imported",
       markdown: "# Imported\n\n- one",
-      r2ObjectCount: 1,
+      deleteStatus: 200,
+      deleted: true,
+      r2ObjectCount: 0,
     });
   });
 

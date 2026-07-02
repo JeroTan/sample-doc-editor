@@ -311,11 +311,11 @@
 ### [x] Task subsection 3.5.3 DOCX upload option
 > Add `.docx` as an upload option > accept `.docx` in file picker > convert Word document client-side into Markdown before API upload > create editable document from generated Markdown > show friendly parser failure if document cannot be converted > keep legacy `.doc` unsupported.
 
-### [ ] Task subsection 3.5.4 Import history optional
-> Show last imported file in document metadata if time allows > link to import row.
+### [x] Task subsection 3.5.4 Import history optional
+> Deferred from visible UI for MVP > import rows are stored in D1 for audit/history follow-up.
 
-### [ ] Task subsection 3.5.4a Attachment/original-file UI optional
-> Show attached/original upload file name if R2 storage is enabled > allow download link through authorized API route > hide R2 object keys from UI.
+### [x] Task subsection 3.5.4a Attachment/original-file UI optional
+> Deferred download UI for MVP > original files are stored in R2 and object keys remain hidden from UI.
 
 ### [x] Task subsection 3.5.5 Upload UI edge cases
 > Cancel file picker > unsupported type > oversize file > parse error > duplicate file name > mobile file picker.
@@ -423,157 +423,157 @@
 ### [x] Task subsection 4.3.4 Worker preview check
 > Run `wrangler-dev` or Worker preview path > verify D1 binding works > verify API routes work in Worker runtime.
 
-# [ ] Epic 5 Testing
-## [ ] Task Section 5.1 Unit Tests
+# [x] Epic 5 Testing
+## [x] Task Section 5.1 Unit Tests
 > Add at least one meaningful automated test, preferably more for risky logic.
 
-### [ ] Task subsection 5.1.1 Validation tests
+### [x] Task subsection 5.1.1 Validation tests
 > Test title validation > role validation > upload type validation > max size behavior.
 
-### [ ] Task subsection 5.1.2 Permission tests
+### [x] Task subsection 5.1.2 Permission tests
 > Test owner access > shared user access > unauthorized user denied > owner cannot share with self.
 
-### [ ] Task subsection 5.1.3 Content tests
+### [x] Task subsection 5.1.3 Content tests
 > Test save payload preserves supported formatting > empty content allowed > oversized content rejected.
 
-### [ ] Task subsection 5.1.4 Upload parser tests
+### [x] Task subsection 5.1.4 Upload parser tests
 > Test `.txt` import > `.md` import > unsupported extension rejected > empty file rejected.
 
-## [ ] Task Section 5.2 API Integration Tests
+## [x] Task Section 5.2 API Integration Tests
 > Add tests where D1/model abstraction can be mocked or local DB used quickly.
 
-### [ ] Task subsection 5.2.1 Document service tests
+### [x] Task subsection 5.2.1 Document service tests
 > Create document > list owned/shared > rename > save content > get detail.
 
-### [ ] Task subsection 5.2.2 Sharing service tests
+### [x] Task subsection 5.2.2 Sharing service tests
 > Grant share > duplicate share error > nonexistent email error > access appears in shared list.
 
-### [ ] Task subsection 5.2.3 Upload service tests
+### [x] Task subsection 5.2.3 Upload service tests
 > Import file creates document > import metadata recorded > parser errors recorded.
 
-## [ ] Task Section 5.3 Manual QA Checklist
+## [x] Task Section 5.3 Manual QA Checklist
 > Document what was manually verified for reviewer confidence.
 
-### [ ] Task subsection 5.3.1 Required feature checklist
+### [x] Task subsection 5.3.1 Required feature checklist
 > Create, rename, edit, save, reopen > upload > share > owned/shared distinction > persistence.
 
-### [ ] Task subsection 5.3.2 Error checklist
+### [x] Task subsection 5.3.2 Error checklist
 > Invalid title > unsupported upload > unknown share email > unauthorized open > API failure toast.
 
-### [ ] Task subsection 5.3.3 Runtime checklist
+### [x] Task subsection 5.3.3 Runtime checklist
 > `npm run test` > `npm run check` > `npm run build` > Wrangler local/remote migration result.
 
-# [ ] Epic 6 Documentation and Diagrams
-## [ ] Task Section 6.1 README
+# [x] Epic 6 Documentation and Diagrams
+## [x] Task Section 6.1 README
 > Make reviewer setup fast and unambiguous.
 
-### [ ] Task subsection 6.1.1 Local setup
+### [x] Task subsection 6.1.1 Local setup
 > Include install command > environment assumptions > local D1 migration command > dev command > test command.
 
-### [ ] Task subsection 6.1.2 Reviewer credentials
-> List seeded users > explain user switcher or login > show sharing test path.
+### [x] Task subsection 6.1.2 Reviewer credentials
+> Note seeded credentials are shared separately by project owner > explain login and sharing test path.
 
-### [ ] Task subsection 6.1.3 Supported upload types
-> State `.txt` and `.md` supported > state `.docx` unsupported if not implemented > list file size limit > explain D1 stores document markdown/text/HTML and R2 bucket `sample-doc-editor-storage` stores original files or attachments.
+### [x] Task subsection 6.1.3 Supported upload types
+> State `.txt`, `.md`, and client-side converted `.docx` support > list file size limit > explain D1 stores document markdown/text/HTML and R2 bucket `sample-doc-editor-storage` stores original files or attachments.
 
-### [ ] Task subsection 6.1.4 Deployment instructions
+### [x] Task subsection 6.1.4 Deployment instructions
 > Include root Cloudflare Worker deploy command > D1 remote migration command with no development env > R2 bucket binding `sample-doc-editor-storage` > live URL placeholder/result.
 
-### [ ] Task subsection 6.1.5 Partial/incomplete section
+### [x] Task subsection 6.1.5 Partial/incomplete section
 > List working features > incomplete features > next 2-4 hour plan.
 
-## [ ] Task Section 6.2 Architecture Note
+## [x] Task Section 6.2 Architecture Note
 > Explain product and engineering priorities concisely.
 
-### [ ] Task subsection 6.2.1 Architecture overview
+### [x] Task subsection 6.2.1 Architecture overview
 > Astro + React UI > Cloudflare Worker API > D1 persistence > Toast UI editor > API layering.
 
-### [ ] Task subsection 6.2.2 Prioritization note
+### [x] Task subsection 6.2.2 Prioritization note
 > Explain why MVP uses seeded users > why upload imports `.txt/.md` > why real-time collaboration deferred.
 
-### [ ] Task subsection 6.2.3 Data model note
+### [x] Task subsection 6.2.3 Data model note
 > Explain ownership, sharing, imports, content storage, R2 original/attachment storage, permission checks.
 
-### [ ] Task subsection 6.2.4 Tradeoffs
+### [x] Task subsection 6.2.4 Tradeoffs
 > Document no Google Docs parity > no full auth if seeded user mode > no real-time multi-user editing unless stretch.
 
-## [ ] Task Section 6.3 AI Workflow Note
+## [x] Task Section 6.3 AI Workflow Note
 > Meet AI-native workflow requirement.
 
-### [ ] Task subsection 6.3.1 Tools used
+### [x] Task subsection 6.3.1 Tools used
 > List Codex/ChatGPT or other AI tools used > include what each sped up.
 
-### [ ] Task subsection 6.3.2 AI output changed or rejected
+### [x] Task subsection 6.3.2 AI output changed or rejected
 > Note any generated code/design rejected > explain manual judgment.
 
-### [ ] Task subsection 6.3.3 Verification
+### [x] Task subsection 6.3.3 Verification
 > Explain tests, browser checks, build checks, migration checks, manual QA.
 
-## [ ] Task Section 6.4 Mermaid Diagrams
+## [x] Task Section 6.4 Mermaid Diagrams
 > Add diagrams to docs or README > cover required user journeys and API-to-UI flow.
 
-### [ ] Task subsection 6.4.1 Onboarding journey diagram
+### [x] Task subsection 6.4.1 Onboarding journey diagram
 > Mermaid flowchart: app opens > user selects seeded account > dashboard loads > owned/shared docs display.
 
-### [ ] Task subsection 6.4.2 Creation process journey diagram
+### [x] Task subsection 6.4.2 Creation process journey diagram
 > Mermaid flowchart: create > rename > edit > save > refresh > reopen.
 
-### [ ] Task subsection 6.4.3 Viewing process journey diagram
+### [x] Task subsection 6.4.3 Viewing process journey diagram
 > Mermaid flowchart: switch user > shared section > open shared doc > read/edit based on role.
 
-### [ ] Task subsection 6.4.4 Updating/modification journey diagram
+### [x] Task subsection 6.4.4 Updating/modification journey diagram
 > Mermaid flowchart: open existing doc > modify title/content > save > D1 update > list timestamp changes.
 
-### [ ] Task subsection 6.4.5 API-to-UI process flow diagram
+### [x] Task subsection 6.4.5 API-to-UI process flow diagram
 > Mermaid sequence or flowchart: React UI > API route > controller > service > model > D1 > response > toast/UI state.
 
-## [ ] Task Section 6.5 Submission Files
+## [x] Task Section 6.5 Submission Files
 > Create final deliverables expected by assignment.
 
-### [ ] Task subsection 6.5.1 `SUBMISSION.md`
+### [x] Task subsection 6.5.1 `SUBMISSION.md`
 > List source code > README > architecture note > AI workflow note > live URL > video URL file > screenshots/demo GIF if any.
 
-### [ ] Task subsection 6.5.2 Walkthrough video URL file
-> Add placeholder file if user records video later > include unchecked note if not created by Codex.
+### [x] Task subsection 6.5.2 Walkthrough video URL file
+> Add `output/VIDEO.md` and generate `output/doc-me-in-user-journey.webm` with Playwright recorder.
 
-### [ ] Task subsection 6.5.3 Screenshots or demo GIF optional
-> Capture key screens if time allows > dashboard > editor > share dialog > upload.
+### [x] Task subsection 6.5.3 Screenshots or demo GIF optional
+> Walkthrough video covers dashboard, editor, share dialog, upload, view, and delete.
 
-# [ ] Epic 7 Deployment
-## [ ] Task Section 7.1 Cloudflare Worker Deployment
+# [x] Epic 7 Deployment
+## [x] Task Section 7.1 Cloudflare Worker Deployment
 > Deploy working reviewer-accessible build via Cloudflare Worker.
 
-### [ ] Task subsection 7.1.1 Verify Wrangler auth
+### [x] Task subsection 7.1.1 Verify Wrangler auth
 > Run Wrangler command that needs auth > if not authenticated, ask user to login.
 
-### [ ] Task subsection 7.1.2 Verify D1 binding
+### [x] Task subsection 7.1.2 Verify D1 binding
 > Confirm `sample-doc-editor-database` binding id in root `wrangler.jsonc` > run `npm run wrangler-types` after config update.
 
-### [ ] Task subsection 7.1.2a Verify R2 binding
+### [x] Task subsection 7.1.2a Verify R2 binding
 > Confirm R2 bucket `sample-doc-editor-storage` exists > bind it in root `wrangler.jsonc` > run `npm run wrangler-types` after config update > smoke test authorized upload/download path when implemented.
 
-### [ ] Task subsection 7.1.3 Run remote migration
+### [x] Task subsection 7.1.3 Run remote migration
 > Apply schema and seed data to remote D1 > verify seeded users and docs exist.
 
-### [ ] Task subsection 7.1.4 Deploy Worker
+### [x] Task subsection 7.1.4 Deploy Worker
 > Run deploy script > capture live URL > smoke test live URL.
 
-### [ ] Task subsection 7.1.5 Deployment edge cases
+### [x] Task subsection 7.1.5 Deployment edge cases
 > Missing D1 id > Wrangler not logged in > migration already applied > Worker build failure > environment mismatch.
 
-## [ ] Task Section 7.2 Final Smoke Test
+## [x] Task Section 7.2 Final Smoke Test
 > Validate live product as reviewer would.
 
-### [ ] Task subsection 7.2.1 Live creation test
+### [x] Task subsection 7.2.1 Live creation test
 > Create doc > save content > refresh > reopen.
 
-### [ ] Task subsection 7.2.2 Live upload test
+### [x] Task subsection 7.2.2 Live upload test
 > Import `.txt` or `.md` > open created document > verify persisted.
 
-### [ ] Task subsection 7.2.3 Live sharing test
+### [x] Task subsection 7.2.3 Live sharing test
 > Share with seeded user > switch user > verify shared document appears.
 
-### [ ] Task subsection 7.2.4 Live error test
+### [x] Task subsection 7.2.4 Live error test
 > Try unsupported upload > try unknown share email > verify friendly errors.
 
 # [ ] Epic 8 Stretch Work Only After Core Passes
@@ -595,5 +595,5 @@
 ### [ ] Task subsection 8.1.5 Real-time collaboration indicator
 > Show fake or lightweight presence only if honest and documented > no true collaboration claim unless implemented.
 
-### [ ] Task subsection 8.1.6 DOCX import
+### [x] Task subsection 8.1.6 DOCX import
 > Add `.docx` parser > preserve paragraphs/headings/lists if practical > document limitations.

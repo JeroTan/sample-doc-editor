@@ -1,7 +1,7 @@
 import { normalizeDocumentTitle } from "../../lib/document-rules";
 import { createId } from "../../lib/ids";
 import { ApiError } from "../config/http";
-import { createDocument as insertDocument, deleteDocument as deleteDocumentRow, getDocumentForUser, getDocumentOwner, listOwnedDocuments, listSharedDocuments, markDocumentOpened, renameDocument, saveDocumentContent } from "../models/documents";
+import { createDocument as insertDocument, deleteDocument as deleteDocumentRow, getDocumentForUser, getDocumentOwner, listDocumentAttachmentKeys, listOwnedDocuments, listSharedDocuments, markDocumentOpened, renameDocument, saveDocumentContent } from "../models/documents";
 import type { ApiEnv, User } from "../types";
 
 const MAX_CONTENT_LENGTH = 1_000_000;
@@ -89,7 +89,9 @@ export async function updateDocumentContent(env: ApiEnv, user: User, documentId:
 
 export async function deleteUserDocument(env: ApiEnv, user: User, documentId: string) {
   const document = await requireOwner(env, user, documentId);
+  const attachmentKeys = await listDocumentAttachmentKeys(env, document.id);
   await deleteDocumentRow(env, document.id);
+  await Promise.all(attachmentKeys.map((key) => env.STORAGE?.delete(key).catch(() => undefined)));
   return { deleted: true };
 }
 

@@ -107,5 +107,15 @@ export async function markDocumentOpened(env: ApiEnv, documentId: string) {
 }
 
 export async function deleteDocument(env: ApiEnv, documentId: string) {
+  await env.DB.prepare("DELETE FROM document_shares WHERE document_id = ?").bind(documentId).run();
+  await env.DB.prepare("DELETE FROM document_attachments WHERE document_id = ?").bind(documentId).run();
+  await env.DB.prepare("DELETE FROM document_imports WHERE document_id = ?").bind(documentId).run();
   await env.DB.prepare("DELETE FROM documents WHERE id = ?").bind(documentId).run();
+}
+
+export async function listDocumentAttachmentKeys(env: ApiEnv, documentId: string) {
+  const result = await env.DB.prepare("SELECT r2_key FROM document_attachments WHERE document_id = ?").bind(documentId).all();
+  return result.results
+    .map((row) => (row as { r2_key?: unknown }).r2_key)
+    .filter((key): key is string => typeof key === "string" && key.length > 0);
 }

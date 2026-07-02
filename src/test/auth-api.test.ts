@@ -103,6 +103,28 @@ describe("credential auth API", () => {
     });
   });
 
+  test("secondary reviewer credential can login", async () => {
+    const env = createEnv();
+    const login = await requestJson<{ data: { user: { email: string; displayName: string } } }>(env, "/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email: "robert@mail.com", password: "12345678" }),
+    });
+
+    const cookie = login.response.headers.get("set-cookie") ?? "";
+
+    expect({
+      loginStatus: login.response.status,
+      loginEmail: login.body.data.user.email,
+      displayName: login.body.data.user.displayName,
+      cookie: cookie.includes("doc_me_in_user=usr_robert"),
+    }).toEqual({
+      loginStatus: 200,
+      loginEmail: "robert@mail.com",
+      displayName: "Robert Reviewer",
+      cookie: true,
+    });
+  });
+
   test("new user can register and duplicate email conflicts", async () => {
     const env = createEnv();
     const register = await requestJson<{ data: { user: { email: string; displayName: string } } }>(env, "/api/auth/register", {

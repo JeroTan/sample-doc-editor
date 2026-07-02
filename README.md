@@ -1,26 +1,26 @@
 # Doc-Me-In
 
-Lightweight collaborative document editor MVP for the Ajaia full stack product engineering assessment.
+Collaborative document editor MVP for the Ajaia full stack product engineering assessment.
 
 ## Stack
 
 - Astro `6.1.9`
-- TypeScript `5.9.3`
 - React `19`
+- TypeScript `5.9.3`
 - Cloudflare Worker
 - Cloudflare D1 database: `sample-doc-editor-database`
+- Cloudflare R2 bucket: `sample-doc-editor-storage`
 - Tailwind CSS v4
-- shadcn-style component primitives
-- lucide icons
-- Toast UI core editor mounted from React with `useEffect`
-- react-toastify
-- Vitest
+- Toast UI editor/viewer
+- Mammoth client-side `.docx` conversion
+- Vitest and Playwright
 
 ## Local Setup
 
 ```bash
 npm install
 npm run wrangler-types
+npm run db:migrate:local
 npm run dev
 ```
 
@@ -31,18 +31,25 @@ Open:
 - Register: `http://localhost:4321/register`
 - Workspace: `http://localhost:4321/app`
 
-Seed credential is provided separately by project owner.
+Seed credentials are shared separately by the project owner. Login UI intentionally does not display or prefill them.
 
 ## Checks
 
 ```bash
+npm run test:run
 npm run check
-npm run build-test
+npm run build
 ```
 
 ## Upload Support
 
-MVP upload import supports `.txt` and `.md` files up to 1 MB. `.docx` is not supported in the MVP; original files or attachments belong in R2 through the `STORAGE` binding.
+Doc-Me-In imports `.txt`, `.md`, and `.docx` files up to 1 MB.
+
+- `.txt` and `.md` upload directly to the Worker.
+- `.docx` converts in the browser with Mammoth, then uploads generated Markdown.
+- Editable Markdown/HTML/text stays in D1.
+- Original uploaded files are written to R2 through the `STORAGE` binding.
+- Legacy `.doc` is unsupported.
 
 ## Cloudflare
 
@@ -55,43 +62,15 @@ The D1 binding is `DB` and targets `sample-doc-editor-database` (`3157d8e9-4a51-
 The R2 binding is `STORAGE` and targets `sample-doc-editor-storage`.
 
 ```bash
-npm run db:migrate:local
 npm run db:migrate:remote
-npm run wrangler-dev
 npm run deploy
 ```
 
-Cloudflare Git deployment settings:
+Live Worker:
 
-- Build command: `npm run build`
-- Deploy command: `npm run deploy`
-
-Do not set the deploy command to raw `wrangler deploy`; the Cloudflare shell may not include `node_modules/.bin` on `PATH`. The npm script resolves the project-local Wrangler version from `devDependencies`.
-
-`db/migrations/0001_initial_schema.sql` creates reviewer seed users:
-
-- `alice@example.com`
-- `bob@example.com`
-- `reviewer@example.com`
-
-Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared with Bob as `editor`.
-
-`db/migrations/0002_markdown_and_r2_attachments.sql` adds Markdown-first document storage and attachment metadata:
-
-- `documents.content_markdown` stores editable Markdown source.
-- `document_attachments.r2_key` stores the R2 object pointer for original files or attachments.
-- Original files belong in R2 bucket `sample-doc-editor-storage`; editable text/markdown/html stays in D1.
-
-`db/migrations/0003_credentials_auth.sql` adds credential authentication:
-
-- `auth_credentials` stores Web Crypto PBKDF2 password salt/hash.
-- Admin reviewer credential is seeded; credential value is shared separately.
-
-`db/migrations/0004_admin_sample_document.sql` adds `Admin Workspace Brief` for the seeded admin login.
-
-`db/migrations/0005_humanized_seed_documents.sql` updates seed document copy so the app reads like a customer-facing workspace.
-
-`db/migrations/0006_last_opened_not_content_update.sql` keeps document-open tracking from making freshly opened documents look stale during save.
+```text
+https://doc-me-in.jerowe-tan99.workers.dev
+```
 
 ## Page Routes
 
@@ -99,9 +78,44 @@ Alice owns `Project Brief`, Bob owns `Bob Notes`, and Alice's brief is shared wi
 - `/login` login form
 - `/register` registration form
 - `/app` document list/workspace shell
-- `/app/docs/:id/view` read-only document page
+- `/app/docs/:id/view` read-only document page rendered with Toast UI Viewer
 - `/app/docs/:id/edit` editable document page
 
-## Current Status
+## Main Features
 
-Epic 0 setup, Epic 1 schema/migration, Epic 2 API, Epic 3 core UI/auth/page routes, and Epic 4 integration/browser verification are complete. Documentation diagrams and deployment remain in later epics from `docs/tasklist.md`.
+- Create, open, rename, edit, save, reopen, and delete documents.
+- Separate owned and shared document sections.
+- Owner/editor/viewer permissions.
+- Share, update role, and revoke access.
+- Import `.txt`, `.md`, and `.docx`.
+- Customer landing page plus URL-aware app pages.
+- Manual save with dirty/saved state.
+
+## Reviewer Video
+
+```bash
+npm run record:journey
+```
+
+Output:
+
+```text
+output/doc-me-in-user-journey.webm
+```
+
+## Docs
+
+- PRD: `docs/collaborative-document-editor-prd.md`
+- Task list: `docs/tasklist.md`
+- Page routes: `docs/page-routes.md`
+- Architecture: `docs/architecture.md`
+- AI workflow: `docs/ai-workflow.md`
+- Manual QA: `docs/manual-qa.md`
+- Submission summary: `SUBMISSION.md`
+
+## Deferred Stretch
+
+- Autosave.
+- Version history.
+- Real-time collaboration/presence.
+- Markdown export.

@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, test, vi } from "vitest";
 
 import { ApiClientError, documentApi, readApiPayload } from "../features/documents/api-client";
-import { canEditDocument, canShareDocument, isSessionExpiredError, SEEDED_USERS, splitDocumentSections } from "../features/documents/ui-state";
+import { canDeleteDocument, canEditDocument, canShareDocument, isSessionExpiredError, SEEDED_USERS, splitDocumentSections } from "../features/documents/ui-state";
 
 describe("document UI state", () => {
   test("seeded user selector exposes reviewer-ready accounts in stable order", () => {
@@ -34,6 +34,9 @@ describe("document UI state", () => {
     expect(canEditDocument({ accessRole: "viewer" })).toBe(false);
     expect(canShareDocument({ accessRole: "owner" })).toBe(true);
     expect(canShareDocument({ accessRole: "editor" })).toBe(false);
+    expect(canDeleteDocument({ accessRole: "owner" })).toBe(true);
+    expect(canDeleteDocument({ accessRole: "editor" })).toBe(false);
+    expect(canDeleteDocument({ accessRole: "viewer" })).toBe(false);
   });
 });
 
